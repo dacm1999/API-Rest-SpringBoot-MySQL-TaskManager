@@ -11,7 +11,7 @@ DROP TABLE IF EXISTS `etiquetas`;
 
 -- Creamos la tabla de usuarios
 CREATE TABLE IF NOT EXISTS usuarios (
-	user_id varchar(100) PRIMARY KEY,
+	user_id INT AUTO_INCREMENT PRIMARY KEY,
     username VARCHAR(100) NOT NULL,
     nombres VARCHAR(100) NOT NULL,
     apellidos VARCHAR(100) NOT NULL,
@@ -22,7 +22,7 @@ CREATE TABLE IF NOT EXISTS usuarios (
 
 -- Creamos la tabla de roles
 CREATE TABLE IF NOT EXISTS roles(
-   user_id varchar(100),
+   user_id INT NOT NULL,
    rol VARCHAR(50) NOT NULL,
    FOREIGN KEY (user_id) REFERENCES usuarios(user_id)
 )ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -48,7 +48,7 @@ CREATE TABLE IF NOT EXISTS tareas (
     estado ENUM('Pendiente', 'Completada') NOT NULL,
     fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     fecha_vencimiento DATE,
-    user_id VARCHAR(100) NOT NULL,
+   user_id INT NOT NULL,
     prioridad_id INT,  -- Añadimos una columna para la relación con la tabla de prioridades
     FOREIGN KEY (user_id) REFERENCES usuarios(user_id),
     FOREIGN KEY (prioridad_id) REFERENCES prioridades(id)  -- Establecemos la relación con la tabla de prioridades
