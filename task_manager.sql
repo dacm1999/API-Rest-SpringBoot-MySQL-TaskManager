@@ -6,8 +6,10 @@ USE gestor_tasks;
 
 -- Creamos la tabla de usuarios
 CREATE TABLE IF NOT EXISTS usuarios (
- id INT AUTO_INCREMENT PRIMARY KEY,
-    nombre VARCHAR(100) NOT NULL,
+	user_id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(100) NOT NULL,
+    nombres VARCHAR(100) NOT NULL,
+    apellidos VARCHAR(100) NOT NULL,
     email VARCHAR(100) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
     fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -17,7 +19,7 @@ CREATE TABLE IF NOT EXISTS usuarios (
 CREATE TABLE IF NOT EXISTS roles(
    user_id INT,
    rol VARCHAR(50) NOT NULL,
-   FOREIGN KEY (user_id) REFERENCES usuarios(id)
+   FOREIGN KEY (user_id) REFERENCES usuarios(user_id)
 );
 
 -- Creamos la tabla de prioridades
@@ -41,9 +43,9 @@ CREATE TABLE IF NOT EXISTS tareas (
     estado ENUM('Pendiente', 'Completada') NOT NULL,
     fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     fecha_vencimiento DATE,
-    usuario_id INT NOT NULL,
+    user_id INT NOT NULL,
     prioridad_id INT,  -- Añadimos una columna para la relación con la tabla de prioridades
-    FOREIGN KEY (usuario_id) REFERENCES usuarios(id),
+    FOREIGN KEY (user_id) REFERENCES usuarios(user_id),
     FOREIGN KEY (prioridad_id) REFERENCES prioridades(id)  -- Establecemos la relación con la tabla de prioridades
 );
 
@@ -67,3 +69,14 @@ CREATE TABLE IF NOT EXISTS tarea_etiqueta (
     FOREIGN KEY (tarea_id) REFERENCES tareas(id),
     FOREIGN KEY (etiqueta_id) REFERENCES etiquetas(id)
 );
+
+-- Insertamos el usuario
+INSERT INTO usuarios (username, nombres, apellidos, email, password) 
+VALUES ('admin', 'Daniel', 'Contreras', 'daniel@gmail.com', '12345');
+
+-- Obtenemos el ID del usuario recién insertado
+SET @user_id = LAST_INSERT_ID();
+
+-- Insertamos el rol asociado al usuario
+INSERT INTO roles (user_id, rol) 
+VALUES (@user_id, 'ROL_ADMIN');
