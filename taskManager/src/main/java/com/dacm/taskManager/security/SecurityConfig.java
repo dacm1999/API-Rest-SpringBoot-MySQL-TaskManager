@@ -6,8 +6,9 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfiguration;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.crypto.password.StandardPasswordEncoder;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
@@ -15,7 +16,6 @@ import org.springframework.security.web.SecurityFilterChain;
 import javax.sql.DataSource;
 
 @Configuration
-//@EnableWebSecurity
 public class SecurityConfig {
 
 
@@ -36,7 +36,7 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
         http.authorizeHttpRequests(configurer -> configurer
-                .requestMatchers(HttpMethod.POST,"api/v1/users/").hasAnyRole("USER","ADMIN")
+                .requestMatchers(HttpMethod.GET,"api/v1/users/users").hasAnyRole("USER","ADMIN")
                 .requestMatchers(HttpMethod.GET,"api/v1/users/allUsers").hasAnyRole("USER", "ADMIN")
         );
 
@@ -49,6 +49,13 @@ public class SecurityConfig {
 
         return http.build();
     }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        // Utiliza un PasswordEncoder estándar sin prefijo
+        return new BCryptPasswordEncoder();
+    }
+
 
 
 }
