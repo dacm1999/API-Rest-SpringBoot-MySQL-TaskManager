@@ -1,4 +1,5 @@
 -- Creamos la base de datos
+DROP DATABASE gestor_tasks;
 CREATE DATABASE IF NOT EXISTS gestor_tasks;
 
 -- Nos aseguramos de usar la base de datos que acabamos de crear
@@ -21,10 +22,11 @@ CREATE TABLE IF NOT EXISTS usuarios (
 )ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- Creamos la tabla de roles
-CREATE TABLE IF NOT EXISTS roles(
-   user_id INT NOT NULL,
-   rol VARCHAR(50) NOT NULL,
-   FOREIGN KEY (user_id) REFERENCES usuarios(user_id)
+CREATE TABLE IF NOT EXISTS roles (
+    role_id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    rol VARCHAR(50) NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES usuarios(user_id) ON DELETE CASCADE
 )ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- Creamos la tabla de prioridades
@@ -48,9 +50,9 @@ CREATE TABLE IF NOT EXISTS tareas (
     estado ENUM('Pendiente', 'Completada') NOT NULL,
     fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     fecha_vencimiento DATE,
-   user_id INT NOT NULL,
+    user_id INT NOT NULL,
     prioridad_id INT,  -- Añadimos una columna para la relación con la tabla de prioridades
-    FOREIGN KEY (user_id) REFERENCES usuarios(user_id),
+    FOREIGN KEY (user_id) REFERENCES usuarios(user_id) ON DELETE CASCADE,
     FOREIGN KEY (prioridad_id) REFERENCES prioridades(id)  -- Establecemos la relación con la tabla de prioridades
 )ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -71,8 +73,12 @@ CREATE TABLE IF NOT EXISTS tarea_etiqueta (
     tarea_id INT,
     etiqueta_id INT,
     PRIMARY KEY (tarea_id, etiqueta_id),
-    FOREIGN KEY (tarea_id) REFERENCES tareas(id),
-    FOREIGN KEY (etiqueta_id) REFERENCES etiquetas(id)
+    FOREIGN KEY (tarea_id) REFERENCES tareas(id) ON DELETE CASCADE,
+    FOREIGN KEY (etiqueta_id) REFERENCES etiquetas(id) ON DELETE CASCADE
 )ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- Agregamos una sentencia TRUNCATE TABLE para cada tabla
+TRUNCATE TABLE tarea_etiqueta;
+TRUNCATE TABLE roles;
 
 

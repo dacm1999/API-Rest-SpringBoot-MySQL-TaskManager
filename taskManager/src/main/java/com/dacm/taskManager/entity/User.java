@@ -8,12 +8,12 @@ import java.util.Date;
 @Entity
 @Data
 @Table(name = "usuarios")
-public class Users {
+public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
-    private int user_id;
+    private int userId;
 
     @Column(name = "username")
     private String username;
@@ -27,8 +27,9 @@ public class Users {
     @Column(name = "email")
     private String email;
 
-    @Column(name = "fecha_creacion")
-    private Date fechaRegistro;
+    @Column(name = "pw")
+    private String password;
+
 
 
 }

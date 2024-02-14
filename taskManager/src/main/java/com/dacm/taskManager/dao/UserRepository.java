@@ -1,7 +1,8 @@
 package com.dacm.taskManager.dao;
 
-import com.dacm.taskManager.entity.Users;
+import com.dacm.taskManager.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface UserRepository extends JpaRepository<Users, Integer> {
+public interface UserRepository extends JpaRepository<User, Integer> {
+    boolean existsByEmail(String email);
 }
