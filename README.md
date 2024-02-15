@@ -20,6 +20,7 @@ Este proyecto es un gestor de tareas desarrollado con Spring Boot, una potente p
 - Spring Data JPA
 - Spring Security
 - MySQL
+- JWT 
 - Lombok
 
 ## Instalación y configuración
@@ -33,5 +34,3 @@ Para ejecutar el proyecto localmente, sigue estos pasos:
 5. Accede a la API desde tu navegador o herramienta de cliente REST favorita.
 
 ---
-
-Puedes personalizar esta descripción según los detalles específicos de tu proyecto y agregar cualquier otra información relevante que desees destacar. ¡Espero que te sea útil!
