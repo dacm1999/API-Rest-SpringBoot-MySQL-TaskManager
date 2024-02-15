@@ -1,19 +1,19 @@
 package com.dacm.taskManager.controller;
 
-import com.dacm.taskManager.dao.UserRepository;
+import com.dacm.taskManager.repository.UserRepository;
 import com.dacm.taskManager.entity.User;
 import com.dacm.taskManager.model.AddModel;
 import com.dacm.taskManager.service.UserService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.ArrayList;
 import java.util.List;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api/v1/users")
 public class UsersRestController {
 
@@ -24,17 +24,10 @@ public class UsersRestController {
     @Autowired
     private final UserRepository userRepository;
 
-    List<User> usuariosAgregados = new ArrayList<>();
-    List<User> usuariosFallidos = new ArrayList<>();
-    boolean success = false;
-    String reason;
-
-
-
-    public UsersRestController(UserService userService, UserRepository userRepository) {
-        this.userService = userService;
-        this.userRepository = userRepository;
-    }
+    private List<User> usuariosAgregados = new ArrayList<>();
+    private List<User> usuariosFallidos = new ArrayList<>();
+    private boolean success = false;
+    private String reason;
 
 
     @GetMapping("/allUsers")

@@ -1,6 +1,6 @@
-package com.dacm.taskManager.serviceImpl;
+package com.dacm.taskManager.service.serviceImpl;
 
-import com.dacm.taskManager.dao.UserRepository;
+import com.dacm.taskManager.repository.UserRepository;
 import com.dacm.taskManager.entity.User;
 import com.dacm.taskManager.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +11,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 @Service

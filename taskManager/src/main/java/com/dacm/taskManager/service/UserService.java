@@ -8,8 +8,8 @@ import java.util.List;
 public interface UserService {
 
     List<User> getAllUsers();
-
-
     ResponseEntity<List<User>> save(User[] users);
+
+
 
 }
