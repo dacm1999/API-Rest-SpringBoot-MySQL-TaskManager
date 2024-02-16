@@ -3,6 +3,9 @@ package com.dacm.taskManager.controller;
 import com.dacm.taskManager.repository.UserRepository;
 import com.dacm.taskManager.entity.User;
 import com.dacm.taskManager.model.AddModel;
+import com.dacm.taskManager.user.UserDTO;
+import com.dacm.taskManager.user.UserRequest;
+import com.dacm.taskManager.user.UserResponse;
 import com.dacm.taskManager.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +37,23 @@ public class UsersRestController {
     public ResponseEntity<List<User>> showAllUsers() {
         usersList = userService.getAllUsers();
         return ResponseEntity.ok(usersList);
+    }
+
+    @GetMapping(value = "/{id}")
+    public ResponseEntity<UserDTO> getUser(@PathVariable Integer id)
+    {
+        UserDTO userDTO = userService.getUser(id);
+        if (userDTO==null)
+        {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(userDTO);
+    }
+
+    @PutMapping(value = "/{id}")
+    public ResponseEntity<UserResponse> updateUser(@RequestBody UserRequest userRequest)
+    {
+        return ResponseEntity.ok(userService.updateUser(userRequest));
     }
 
     @PostMapping("/")

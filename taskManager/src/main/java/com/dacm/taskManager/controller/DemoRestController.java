@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/v1")
 @RequiredArgsConstructor
-public class DemoController {
+public class DemoRestController {
     
     @PostMapping(value = "demo")
     public String welcome()

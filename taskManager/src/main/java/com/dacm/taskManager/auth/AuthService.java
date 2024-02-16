@@ -1,7 +1,6 @@
 package com.dacm.taskManager.auth;
 
 
-
 import com.dacm.taskManager.auth.AuthResponse;
 import com.dacm.taskManager.auth.LoginRequest;
 import com.dacm.taskManager.auth.RegisterRequest;
@@ -26,7 +25,7 @@ public class AuthService {
 
     public AuthResponse login(LoginRequest request) {
 
-        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getUsername(),request.getPassword()));
+        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
         User user = userRepository.findByUsername(request.getUsername()).orElseThrow();
         String token = jwtService.getToken(user);
 

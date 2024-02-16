@@ -1,6 +1,5 @@
 package com.dacm.taskManager.controller;
 
-import com.dacm.taskManager.Jwt.JwtService;
 import com.dacm.taskManager.auth.RegisterRequest;
 import com.dacm.taskManager.auth.AuthResponse;
 import com.dacm.taskManager.auth.LoginRequest;
@@ -13,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/auth")
 @RequiredArgsConstructor
 @CrossOrigin(origins = {"http://localhost:8080"})
-public class AuthController {
+public class AuthRestController {
 
     private final AuthService authService;
 
