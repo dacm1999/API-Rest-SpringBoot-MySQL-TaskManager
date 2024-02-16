@@ -1,18 +1,17 @@
-package com.dacm.taskManager.service;
+package com.dacm.taskManager.auth;
 
 
 
 import com.dacm.taskManager.auth.AuthResponse;
 import com.dacm.taskManager.auth.LoginRequest;
 import com.dacm.taskManager.auth.RegisterRequest;
-import com.dacm.taskManager.auth.Role;
+import com.dacm.taskManager.user.Role;
 import com.dacm.taskManager.repository.UserRepository;
 import com.dacm.taskManager.entity.User;
 import com.dacm.taskManager.Jwt.JwtService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -28,15 +27,15 @@ public class AuthService {
     public AuthResponse login(LoginRequest request) {
 
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getUsername(),request.getPassword()));
-        UserDetails user = userRepository.findByUsername(request.getUsername()).orElseThrow();
+        User user = userRepository.findByUsername(request.getUsername()).orElseThrow();
         String token = jwtService.getToken(user);
 
         return AuthResponse
                 .builder()
                 .tokenGenerate(token)
                 .build();
-
     }
+
     public AuthResponse register(RegisterRequest request) {
         User user = User.builder()
                 .username(request.getUsername())
@@ -44,7 +43,7 @@ public class AuthService {
                 .firstname(request.getFirstname())
                 .lastname(request.getLastname())
                 .email(request.getEmail())
-                .role(Role.USER)
+                .role(Role.ROLE_USER)
                 .build();
 
         userRepository.save(user);
@@ -52,6 +51,5 @@ public class AuthService {
         return AuthResponse.builder()
                 .tokenGenerate(jwtService.getToken(user))
                 .build();
-
     }
 }

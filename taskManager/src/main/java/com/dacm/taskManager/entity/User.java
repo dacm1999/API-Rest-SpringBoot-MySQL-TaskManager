@@ -1,6 +1,6 @@
 package com.dacm.taskManager.entity;
 
-import com.dacm.taskManager.auth.Role;
+import com.dacm.taskManager.user.Role;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

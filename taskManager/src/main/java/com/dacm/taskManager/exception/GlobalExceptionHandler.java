@@ -1,4 +1,4 @@
-package com.dacm.taskManager.ExceptionHandler;
+package com.dacm.taskManager.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

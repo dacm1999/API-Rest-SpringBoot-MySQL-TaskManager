@@ -1,8 +1,8 @@
-package com.dacm.taskManager.service.serviceImpl;
+package com.dacm.taskManager.user;
 
 import com.dacm.taskManager.repository.UserRepository;
 import com.dacm.taskManager.entity.User;
-import com.dacm.taskManager.service.UserService;
+import com.dacm.taskManager.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

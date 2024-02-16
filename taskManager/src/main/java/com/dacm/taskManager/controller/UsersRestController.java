@@ -3,7 +3,7 @@ package com.dacm.taskManager.controller;
 import com.dacm.taskManager.repository.UserRepository;
 import com.dacm.taskManager.entity.User;
 import com.dacm.taskManager.model.AddModel;
-import com.dacm.taskManager.service.UserService;
+import com.dacm.taskManager.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
