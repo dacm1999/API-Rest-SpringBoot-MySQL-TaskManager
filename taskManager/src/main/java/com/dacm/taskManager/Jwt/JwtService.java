@@ -12,6 +12,8 @@ import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
 import java.security.Key;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -28,18 +30,26 @@ public class JwtService {
         return getToken(new HashMap<>(), user);
     }
 
-    private String getToken(Map<String,Object> extraClaims, User user) {
+    /**
+     * Generates a JWT token for the specified user with additional claims.
+     *
+     * @param extraClaims Additional claims to include in the JWT.
+     * @param user        The user for whom the token is being generated.
+     * @return The JWT token string.
+     */
+    private String getToken(Map<String, Object> extraClaims, User user) {
         return Jwts
                 .builder()
-                .claims(extraClaims)
-                .claim(("firstName"), user.getFirstname())
-                .claim("lastName", user.getLastname())
-                .subject(user.getUsername())
-                .issuedAt(new Date(System.currentTimeMillis()))
-                .expiration(new Date(System.currentTimeMillis()+1000*60*24))
-                .signWith(getKey())
-                .compact();
+                .claims(extraClaims) // Include additional claims
+                .claim("firstName", user.getFirstname()) // Add user's first name as a claim
+                .claim("lastName", user.getLastname()) // Add user's last name as a claim
+                .subject(user.getUsername()) // Set the subject of the token to the user's username
+                .issuedAt(new Date(System.currentTimeMillis())) // Set the token's issued date to the current time
+                .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 2)) // Set token expiration to 2 hours from now
+                .signWith(getKey()) // Sign the token with the secret key
+                .compact(); // Compact and return the token as a string
     }
+
 
     private SecretKey getKey() {
         byte[] keyBytes = Decoders.BASE64.decode(SECRET_KEY);

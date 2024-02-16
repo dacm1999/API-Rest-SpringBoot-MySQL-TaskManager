@@ -27,7 +27,7 @@ public class AuthRestExceptionHandler {
     public ResponseEntity<ErrorResponse> handleAuthenticationException(AuthenticationException ex) {
         ErrorResponse error = new ErrorResponse();
         error.setStatus(HttpStatus.UNAUTHORIZED.value());
-        error.setMessage("Crendiciales no válidas");
+        error.setMessage(ex.getMessage());
         error.setTimeStamp(System.currentTimeMillis());
         return new ResponseEntity<>(error, HttpStatus.UNAUTHORIZED);
     }

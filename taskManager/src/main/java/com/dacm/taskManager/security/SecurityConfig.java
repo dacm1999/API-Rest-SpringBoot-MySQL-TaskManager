@@ -22,46 +22,27 @@ public class SecurityConfig {
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final AuthenticationProvider authProvider;
 
-//    @Bean
-//    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception
-//    {
-//        return http
-//                .csrf(AbstractHttpConfigurer::disable)
-//                .authorizeHttpRequests(authRequest ->
-//                        authRequest
-//                                .requestMatchers(HttpMethod.GET).permitAll()
-////                                .requestMatchers(HttpMethod.OPTIONS).permitAll()
-//                                .requestMatchers("/auth/**").permitAll()
-//                                .requestMatchers("api/v1/users/").hasRole("USER")
-//                                .requestMatchers("api/v1/users/allUsers").hasRole("ADMIN")
-//                                .anyRequest().authenticated()
-//                )
-//                .sessionManagement(sessionManager->
-//                        sessionManager
-//                                .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-//                .authenticationProvider(authProvider)
-//                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-//                .build();
-//
-//
-//    }
-
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception
+    {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
-                .authorizeRequests(authorize -> authorize
-                        .requestMatchers("/auth/**").permitAll()
-                        .requestMatchers(HttpMethod.GET,"/api/v1/users/allUsers").hasRole("ADMIN") // Restringir acceso a /api/v1/users/** para usuarios con el rol USER
-                        .anyRequest().authenticated()
+                .authorizeHttpRequests(authRequest ->
+                                authRequest
+                                        .requestMatchers("/auth/**").permitAll()
+                                        .requestMatchers("api/v1/users/allUsers").hasRole("ADMIN")
+//                                .requestMatchers(HttpMethod.GET).permitAll()
+//                                .requestMatchers(HttpMethod.OPTIONS).permitAll()
+                                        .anyRequest().authenticated()
                 )
-                .sessionManagement(sessionManager ->
+                .sessionManagement(sessionManager->
                         sessionManager
-                                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                )
+                                .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authProvider)
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
+
+
     }
 
 
