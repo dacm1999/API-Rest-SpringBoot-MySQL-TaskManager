@@ -14,6 +14,7 @@ public interface UserRepository extends JpaRepository<User, Integer> {
 
     boolean existsByEmail(String email);
 
+    boolean existsByUsernameContainsIgnoreCase(String username);
     @Modifying()
     @Query("update User u set u.firstname=:firstname, u.lastname=:lastname, u.email=:country where u.userId = :id")
     void updateUser(@Param(value = "id") Integer id, @Param(value = "firstname") String firstname, @Param(value = "lastname") String lastname , @Param(value = "country") String country);

@@ -1,6 +1,5 @@
 package com.dacm.taskManager;
 
-import com.dacm.taskManager.Jwt.JwtService;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 

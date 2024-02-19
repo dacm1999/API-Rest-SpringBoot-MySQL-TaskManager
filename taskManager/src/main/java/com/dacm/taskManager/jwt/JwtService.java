@@ -1,9 +1,8 @@
-package com.dacm.taskManager.Jwt;
+package com.dacm.taskManager.jwt;
 
 import com.dacm.taskManager.entity.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
@@ -11,9 +10,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
-import java.security.Key;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -45,7 +41,7 @@ public class JwtService {
                 .claim("lastName", user.getLastname()) // Add user's last name as a claim
                 .subject(user.getUsername()) // Set the subject of the token to the user's username
                 .issuedAt(new Date(System.currentTimeMillis())) // Set the token's issued date to the current time
-                .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 2)) // Set token expiration to 2 hours from now
+                .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 20)) // Set token expiration to 20 minutes from now
                 .signWith(getKey()) // Sign the token with the secret key
                 .compact(); // Compact and return the token as a string
     }
@@ -86,5 +82,6 @@ public class JwtService {
     private boolean isTokenExpired(String token) {
         return getExpiration(token).before(new Date());
     }
+
 
 }

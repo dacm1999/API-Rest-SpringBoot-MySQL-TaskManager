@@ -1,6 +1,6 @@
 package com.dacm.taskManager.security;
 
-import com.dacm.taskManager.Jwt.JwtAuthenticationFilter;
+import com.dacm.taskManager.jwt.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -23,19 +23,18 @@ public class SecurityConfig {
     private final AuthenticationProvider authProvider;
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception
-    {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authRequest ->
                                 authRequest
                                         .requestMatchers("/auth/**").permitAll()
                                         .requestMatchers("api/v1/users/**").hasRole("ADMIN")
-//                                .requestMatchers(HttpMethod.GET).permitAll()
+                                        .requestMatchers(HttpMethod.DELETE).hasRole("ADMIN")
 //                                .requestMatchers(HttpMethod.OPTIONS).permitAll()
                                         .anyRequest().authenticated()
                 )
-                .sessionManagement(sessionManager->
+                .sessionManagement(sessionManager ->
                         sessionManager
                                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authProvider)
@@ -44,7 +43,6 @@ public class SecurityConfig {
 
 
     }
-
 
 
 }

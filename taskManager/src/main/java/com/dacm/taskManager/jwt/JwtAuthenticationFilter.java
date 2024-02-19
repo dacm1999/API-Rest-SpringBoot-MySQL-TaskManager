@@ -1,4 +1,4 @@
-package com.dacm.taskManager.Jwt;
+package com.dacm.taskManager.jwt;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

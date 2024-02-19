@@ -1,4 +1,4 @@
-package com.dacm.taskManager.auth;
+package com.dacm.taskManager.authentication;
 
 import lombok.*;
 

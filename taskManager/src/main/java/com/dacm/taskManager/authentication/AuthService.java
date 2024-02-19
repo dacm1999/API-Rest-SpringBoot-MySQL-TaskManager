@@ -1,13 +1,11 @@
-package com.dacm.taskManager.auth;
+package com.dacm.taskManager.authentication;
 
 
-import com.dacm.taskManager.auth.AuthResponse;
-import com.dacm.taskManager.auth.LoginRequest;
-import com.dacm.taskManager.auth.RegisterRequest;
 import com.dacm.taskManager.user.Role;
 import com.dacm.taskManager.repository.UserRepository;
 import com.dacm.taskManager.entity.User;
-import com.dacm.taskManager.Jwt.JwtService;
+import com.dacm.taskManager.jwt.JwtService;
+import io.micrometer.common.util.StringUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -28,14 +26,36 @@ public class AuthService {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
         User user = userRepository.findByUsername(request.getUsername()).orElseThrow();
         String token = jwtService.getToken(user);
+        // Verificar si el token ha expirado
 
         return AuthResponse
                 .builder()
-                .tokenGenerate(token)
+                .generatedToken(token)
                 .build();
     }
 
     public AuthResponse register(RegisterRequest request) {
+
+        //Validations
+        if(StringUtils.isEmpty(request.getUsername())){
+            throw new IllegalArgumentException("Username must be mandatory");
+        } else if (userRepository.existsByEmail(request.getEmail())) {
+            throw new IllegalArgumentException("Email already registered.");
+        }
+
+        if(StringUtils.isEmpty(request.getEmail())){
+            throw new IllegalArgumentException("Email must be mandatory");
+            
+        }else if(userRepository.existsByUsernameContainsIgnoreCase(request.getUsername())){
+            throw new IllegalArgumentException("Username already registered.");
+        }
+        
+        if (StringUtils.isEmpty(request.getPassword())) {
+            throw new IllegalArgumentException("Password must be mandatory.");
+        } else if (request.getPassword().length() < 5) {
+            throw new IllegalArgumentException("The password must be more than 5 characters.");
+        }
+
         User user = User.builder()
                 .username(request.getUsername())
                 .password(passwordEncoder.encode(request.getPassword()))
@@ -48,7 +68,7 @@ public class AuthService {
         userRepository.save(user);
 
         return AuthResponse.builder()
-                .tokenGenerate(jwtService.getToken(user))
+                .generatedToken(jwtService.getToken(user))
                 .build();
     }
 }

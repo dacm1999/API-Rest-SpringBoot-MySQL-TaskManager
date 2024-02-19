@@ -1,9 +1,9 @@
 package com.dacm.taskManager.controller;
 
-import com.dacm.taskManager.auth.RegisterRequest;
-import com.dacm.taskManager.auth.AuthResponse;
-import com.dacm.taskManager.auth.LoginRequest;
-import com.dacm.taskManager.auth.AuthService;
+import com.dacm.taskManager.authentication.RegisterRequest;
+import com.dacm.taskManager.authentication.AuthResponse;
+import com.dacm.taskManager.authentication.LoginRequest;
+import com.dacm.taskManager.authentication.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
