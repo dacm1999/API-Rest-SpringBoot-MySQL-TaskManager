@@ -1,6 +1,8 @@
 package com.dacm.taskManager.controller;
 
+import com.dacm.taskManager.entity.Tags;
 import com.dacm.taskManager.exception.CommonErrorResponse;
+import com.dacm.taskManager.model.AddModel;
 import com.dacm.taskManager.repository.TagRepository;
 import com.dacm.taskManager.tags.TagServiceImpl;
 import com.dacm.taskManager.tags.TagsDTO;
@@ -23,7 +25,7 @@ public class TagsRestController {
     @Autowired
     private final TagServiceImpl tagService;
     @Autowired
-    private final TagRepository tagRepository;
+    private final TagRepository tagsRepository;
 
     @GetMapping(value = "/{tagName}")
     @PreAuthorize("hasAnyRole('ADMIN','USER')")
@@ -78,6 +80,28 @@ public class TagsRestController {
         }
 
     }
+
+    @PostMapping(value = "/")
+    @PreAuthorize("hasAnyRole('ADMIN','USER')")
+    public ResponseEntity<AddModel> addManyTags(@RequestBody Tags [] tags){
+        AddModel result = null;
+
+        return ResponseEntity.ok(result);
+    }
+
+    @PostMapping(value = "/single")
+    @PreAuthorize("hasAnyRole('ADMIN','USER')")
+    public ResponseEntity<TagsDTO> addSingleTag(@RequestBody Tags tags){
+        TagsDTO tagsDTO = null;
+
+        Tags savedTags = tagsRepository.save(tags); // Saving the Tags object using the repository
+
+        tagsDTO = tagService.convertToDTO(savedTags); // Assuming you have a method to convert Tags to TagsDTO
+
+        return ResponseEntity.ok(tagsDTO);
+    }
+
+
 
     @GetMapping(value = "/allTags")
     @PreAuthorize("hasRole('ADMIN')")
