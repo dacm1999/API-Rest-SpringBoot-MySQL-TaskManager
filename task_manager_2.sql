@@ -51,16 +51,17 @@ CREATE TABLE IF NOT EXISTS tareas (
 )ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- Creamos la tabla de etiquetas
-CREATE TABLE IF NOT EXISTS etiquetas (
+CREATE TABLE IF NOT EXISTS Tags (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    nombre VARCHAR(50) NOT NULL
+    name VARCHAR(50) NOT NULL,
+    description varchar(200) NOT NULL
 )ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- Insertamos algunas etiquetas
-INSERT INTO etiquetas (nombre) VALUES 
-('Trabajo'),
-('Personal'),
-('Urgente');
+INSERT INTO TAGS (name, description) VALUES 
+('Trabajo','Tareas del trabajo'),
+('Personal','Tareas personales'),
+('Urgente','Primera providad');
 
 -- Creamos la tabla de relación entre tareas y etiquetas
 CREATE TABLE IF NOT EXISTS tarea_etiqueta (
@@ -68,7 +69,7 @@ CREATE TABLE IF NOT EXISTS tarea_etiqueta (
     etiqueta_id INT,
     PRIMARY KEY (tarea_id, etiqueta_id),
     FOREIGN KEY (tarea_id) REFERENCES tareas(id) ON DELETE CASCADE,
-    FOREIGN KEY (etiqueta_id) REFERENCES etiquetas(id) ON DELETE CASCADE
+    FOREIGN KEY (etiqueta_id) REFERENCES tags(id) ON DELETE CASCADE
 )ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- Agregamos una sentencia TRUNCATE TABLE para cada tabla
