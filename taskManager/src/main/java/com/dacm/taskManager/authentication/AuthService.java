@@ -35,27 +35,6 @@ public class AuthService {
     }
 
     public AuthResponse register(RegisterRequest request) {
-
-        //Validations
-        if(StringUtils.isEmpty(request.getUsername())){
-            throw new IllegalArgumentException("Username must be mandatory");
-        } else if (userRepository.existsByEmail(request.getEmail())) {
-            throw new IllegalArgumentException("Email already registered.");
-        }
-
-        if(StringUtils.isEmpty(request.getEmail())){
-            throw new IllegalArgumentException("Email must be mandatory");
-            
-        }else if(userRepository.existsByUsernameContainsIgnoreCase(request.getUsername())){
-            throw new IllegalArgumentException("Username already registered.");
-        }
-        
-        if (StringUtils.isEmpty(request.getPassword())) {
-            throw new IllegalArgumentException("Password must be mandatory.");
-        } else if (request.getPassword().length() < 5) {
-            throw new IllegalArgumentException("The password must be more than 5 characters.");
-        }
-
         User user = User.builder()
                 .username(request.getUsername())
                 .password(passwordEncoder.encode(request.getPassword()))

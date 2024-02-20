@@ -1,19 +1,24 @@
 package com.dacm.taskManager.exception;
 
+
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
+import io.jsonwebtoken.MalformedJwtException;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import java.security.SignatureException;
+import java.sql.SQLIntegrityConstraintViolationException;
 
-@ControllerAdvice
+@RestControllerAdvice
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(IllegalArgumentException.class)
@@ -25,6 +30,7 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
 
     }
+
 
     @ExceptionHandler(AuthenticationException.class)
     public ResponseEntity<ErrorResponse> handleAuthenticationException(AuthenticationException ex) {
@@ -38,11 +44,12 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<ErrorResponse> handleAccessDeniedException(AccessDeniedException ex) {
         ErrorResponse error = new ErrorResponse();
-        error.setStatus(HttpStatus.FORBIDDEN.value());
-        error.setMessage("Acceso denegado - No tienes los permisos necesarios para acceder a este recurso." + ex.getMessage());
+        error.setStatus(HttpStatus.UNAUTHORIZED.value());
+        error.setMessage(ex.getMessage());
         error.setTimeStamp(System.currentTimeMillis());
-        return new ResponseEntity<>(error, HttpStatus.FORBIDDEN);
+        return new ResponseEntity<>(error, HttpStatus.UNAUTHORIZED);
     }
+
 
     @ExceptionHandler(HttpClientErrorException.class)
     public ResponseEntity<ErrorResponse> handleHttpClientErrorException(HttpClientErrorException ex) {
@@ -52,20 +59,12 @@ public class GlobalExceptionHandler {
         error.setTimeStamp(System.currentTimeMillis());
         return new ResponseEntity<>(error, ex.getStatusCode());
     }
-    @ExceptionHandler(UsernameNotFoundException.class)
-    public ResponseEntity<ErrorResponse> handleUsernameNotFoundException(UsernameNotFoundException ex) {
-        ErrorResponse error = new ErrorResponse();
-        error.setStatus(HttpStatus.NOT_FOUND.value());
-        error.setMessage("User not found: " + ex.getMessage());
-        error.setTimeStamp(System.currentTimeMillis());
-        return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
-    }
 
     @ExceptionHandler(HttpServerErrorException.class)
     public ResponseEntity<ErrorResponse> handleHttpServerErrorException(HttpServerErrorException ex) {
         ErrorResponse error = new ErrorResponse();
         error.setStatus(ex.getRawStatusCode());
-        error.setMessage("Error interno del servidor - " + ex.getMessage());
+        error.setMessage("Internal server error - " + ex.getMessage());
         error.setTimeStamp(System.currentTimeMillis());
         return new ResponseEntity<>(error, ex.getStatusCode());
     }
@@ -79,23 +78,25 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handlerArgumentException(MethodArgumentTypeMismatchException ex) {
         ErrorResponse error = new ErrorResponse();
         error.setStatus(HttpStatus.BAD_REQUEST.value());
-        error.setMessage("Enter valid registration");
+        error.setMessage("Enter a valid value.");
         error.setTimeStamp(System.currentTimeMillis());
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
 
     }
 
-    @ExceptionHandler(SignatureException.class)
-    public ResponseEntity<ErrorResponse> handlerArgumentException(SignatureException ex) {
+    //    >------------------------------------------------------------------ AUTH EXCEPTIONS ------------------------------------------------------------------<
+
+    @ExceptionHandler(AuthErrorResponse.class)
+    public ResponseEntity<ErrorResponse> handleAuthErrorResponse(AuthErrorResponse ex) {
         ErrorResponse error = new ErrorResponse();
-        error.setStatus(HttpStatus.BAD_REQUEST.value());
-        error.setMessage("Please enter a valid token");
+        error.setStatus(HttpStatus.UNAUTHORIZED.value());
+        error.setMessage(ex.getMessage());
         error.setTimeStamp(System.currentTimeMillis());
-        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
-
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(error);
     }
 
-    @ExceptionHandler(UserResponse.class)
+    //    >------------------------------------------------------------------ USER EXCEPTIONS ------------------------------------------------------------------<
+    @ExceptionHandler(UserErrorResponse.class)
     public ResponseEntity<ErrorResponse> handlerArgumentException(RuntimeException ex) {
         ErrorResponse error = new ErrorResponse();
         error.setStatus(HttpStatus.NOT_FOUND.value());
@@ -103,15 +104,64 @@ public class GlobalExceptionHandler {
         error.setTimeStamp(System.currentTimeMillis());
         return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
     }
+    @ExceptionHandler(SQLIntegrityConstraintViolationException.class)
+    public ResponseEntity<ErrorResponse> handlerArgumentException(SQLIntegrityConstraintViolationException ex) {
+        ErrorResponse error = new ErrorResponse();
+        error.setStatus(HttpStatus.BAD_REQUEST.value());
+        error.setMessage(ex.getMessage());
+        error.setTimeStamp(System.currentTimeMillis());
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    }
 
-//    @ExceptionHandler(ExecutionControl.UserException.class)
-//    public ResponseEntity<ErrorResponse> handleUserException(ExecutionControl.UserException ex) {
-//        ErrorResponse error = new ErrorResponse();
-//        error.setStatus(HttpStatus.NOT_FOUND.value());
-//        error.setMessage(ex.getMessage());
-//        error.setTimeStamp(System.currentTimeMillis());
-//        return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
-//    }
+
+    //    >------------------------------------------------------------------ JWT EXCEPTIONS ------------------------------------------------------------------<
+
+    @ExceptionHandler(JwtErrorResponse.class)
+    public ResponseEntity<ErrorResponse> handleJwtErrorResponse(RuntimeException ex) {
+        ErrorResponse error = new ErrorResponse();
+        error.setStatus(HttpStatus.BAD_REQUEST.value());
+        error.setMessage(ex.getMessage());
+        error.setTimeStamp(System.currentTimeMillis());
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+
+    }
+    @ExceptionHandler(JwtException.class)
+    public ResponseEntity<ErrorResponse> handleJwtErrorResponse(JwtException ex) {
+        ErrorResponse error = new ErrorResponse();
+        error.setStatus(HttpStatus.BAD_REQUEST.value());
+        error.setMessage(ex.getMessage());
+        error.setTimeStamp(System.currentTimeMillis());
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+
+    }
+    @ExceptionHandler(ExpiredJwtException.class)
+    public ResponseEntity<ErrorResponse> handleJwtErrorResponse(ExpiredJwtException ex) {
+        ErrorResponse error = new ErrorResponse();
+        error.setStatus(HttpStatus.BAD_REQUEST.value());
+        error.setMessage(ex.getMessage());
+        error.setTimeStamp(System.currentTimeMillis());
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+
+    }
+    @ExceptionHandler(MalformedJwtException.class)
+    public ResponseEntity<ErrorResponse> handleJwtErrorResponse(MalformedJwtException ex) {
+        ErrorResponse error = new ErrorResponse();
+        error.setStatus(HttpStatus.BAD_REQUEST.value());
+        error.setMessage(ex.getMessage());
+        error.setTimeStamp(System.currentTimeMillis());
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+
+    }
+    @ExceptionHandler(SignatureException.class)
+    public ResponseEntity<ErrorResponse> handleJwtErrorResponse(SignatureException ex) {
+        ErrorResponse error = new ErrorResponse();
+        error.setStatus(HttpStatus.BAD_REQUEST.value());
+        error.setMessage(ex.getMessage());
+        error.setTimeStamp(System.currentTimeMillis());
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+
+    }
+
 
 
 }

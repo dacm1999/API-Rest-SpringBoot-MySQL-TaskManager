@@ -12,15 +12,14 @@ public interface UserService {
 
     UserDTO convertToDTO(User user);
 
+    UserDTO getUser(String username);
+
     UserDTO getUser(Integer id);
 
     UserDTO updateUserById(Integer id, UserDTO updatedUserDTO);
 
     UserDTO deleteUserById(Integer id);
     List<UserDTO> getAllUsersDTO();
-
-    public List<UserDTO> addUsers(List<User> userList);
-
     ResponseEntity<List<User>> save(User[] users);
 
 }

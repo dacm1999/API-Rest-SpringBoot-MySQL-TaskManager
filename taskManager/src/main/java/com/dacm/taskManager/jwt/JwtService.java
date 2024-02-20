@@ -1,11 +1,16 @@
 package com.dacm.taskManager.jwt;
 
 import com.dacm.taskManager.entity.User;
+import com.dacm.taskManager.exception.JwtErrorResponse;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -41,7 +46,7 @@ public class JwtService {
                 .claim("lastName", user.getLastname()) // Add user's last name as a claim
                 .subject(user.getUsername()) // Set the subject of the token to the user's username
                 .issuedAt(new Date(System.currentTimeMillis())) // Set the token's issued date to the current time
-                .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 20)) // Set token expiration to 20 minutes from now
+                .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60)) // Set token expiration to 60 minutes from now
                 .signWith(getKey()) // Sign the token with the secret key
                 .compact(); // Compact and return the token as a string
     }
@@ -62,6 +67,11 @@ public class JwtService {
     }
 
     private Claims getAllClaims(String token) {
+        try{
+
+        }catch (ExpiredJwtException e){
+            throw new JwtErrorResponse("Token has expired",e);
+        }
         return Jwts
                 .parser()
                 .verifyWith(getKey())
