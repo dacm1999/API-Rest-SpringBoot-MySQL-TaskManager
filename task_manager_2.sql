@@ -73,5 +73,3 @@ CREATE TABLE IF NOT EXISTS tarea_etiqueta (
 
 -- Agregamos una sentencia TRUNCATE TABLE para cada tabla
 TRUNCATE TABLE tarea_etiqueta;
-
-

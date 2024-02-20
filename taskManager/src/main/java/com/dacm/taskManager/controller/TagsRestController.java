@@ -101,12 +101,11 @@ public class TagsRestController {
         return ResponseEntity.ok(tagsDTO);
     }
 
-
-
     @GetMapping(value = "/allTags")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<TagsDTO>> showAllTags(){
         List<TagsDTO> tagsDAOList = tagService.getAllTagsDTO();
         return ResponseEntity.ok(tagsDAOList);
     }
+
 }
