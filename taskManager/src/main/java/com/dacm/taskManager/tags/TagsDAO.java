@@ -1,6 +1,5 @@
 package com.dacm.taskManager.tags;
 
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -8,5 +7,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class TagsDAO {
 
-    String tagName;
+    String name;
+    String description;
 }

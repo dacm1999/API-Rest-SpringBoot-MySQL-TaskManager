@@ -33,8 +33,7 @@ public class SecurityConfig {
                                         .requestMatchers(HttpMethod.DELETE).hasRole("ADMIN")
                                         .anyRequest().authenticated()
                 )
-                .sessionManagement(sessionManager ->
-                        sessionManager
+                .sessionManagement(sessionManager -> sessionManager
                                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authProvider)
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)

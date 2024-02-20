@@ -1,13 +1,9 @@
 package com.dacm.taskManager.user;
 
-import com.dacm.taskManager.exception.UserErrorResponse;
 import com.dacm.taskManager.repository.UserRepository;
 import com.dacm.taskManager.entity.User;
 import com.dacm.taskManager.service.UserService;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -96,15 +92,12 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<UserDTO> getAllUsersDTO() {
-
         List<User> usersList = userRepository.findAll();
         List<UserDTO> userDTOList = new ArrayList<>();
 
         for (User users : usersList) {
-
             UserDTO userDTO = convertToDTO(users);
             userDTOList.add(userDTO);
-
         }
 
         return userDTOList;

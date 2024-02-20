@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "etiquetas")
+@Table(name = "tags")
 public class Tags {
 
     @Id
@@ -19,7 +19,10 @@ public class Tags {
     @Column(name = "id")
     public int tagId;
 
-    @Column(name = "nombre")
-    public String tagName;
+    @Column(name = "name")
+    private String name;
+
+    @Column(name = "description")
+    public String description;
 
 }

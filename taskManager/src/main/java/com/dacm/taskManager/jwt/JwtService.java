@@ -1,16 +1,13 @@
 package com.dacm.taskManager.jwt;
 
 import com.dacm.taskManager.entity.User;
-import com.dacm.taskManager.exception.JwtErrorResponse;
+import com.dacm.taskManager.exception.CommonErrorResponse;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -68,16 +65,16 @@ public class JwtService {
 
     private Claims getAllClaims(String token) {
         try{
-
+            return Jwts
+                    .parser()
+                    .verifyWith(getKey())
+                    .build()
+                    .parseSignedClaims(token)
+                    .getPayload();
         }catch (ExpiredJwtException e){
-            throw new JwtErrorResponse("Token has expired",e);
+            throw new CommonErrorResponse("Token has expired",e);
         }
-        return Jwts
-                .parser()
-                .verifyWith(getKey())
-                .build()
-                .parseSignedClaims(token)
-                .getPayload();
+
     }
 
     public <T> T getClaim(String token, Function<Claims, T> claimsResolver) {

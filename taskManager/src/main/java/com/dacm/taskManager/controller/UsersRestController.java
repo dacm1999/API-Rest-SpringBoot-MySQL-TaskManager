@@ -1,7 +1,6 @@
 package com.dacm.taskManager.controller;
 
-import com.dacm.taskManager.exception.UserErrorResponse;
-import com.dacm.taskManager.repository.UserRepository;
+import com.dacm.taskManager.exception.CommonErrorResponse;
 import com.dacm.taskManager.entity.User;
 import com.dacm.taskManager.model.AddModel;
 import com.dacm.taskManager.user.Role;
@@ -9,15 +8,12 @@ import com.dacm.taskManager.user.UserDTO;
 import com.dacm.taskManager.user.UserServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.orm.hibernate5.HibernateQueryException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
-import java.sql.SQLException;
-import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.*;
 
 @RestController
@@ -35,7 +31,7 @@ public class UsersRestController {
     public ResponseEntity<UserDTO> getUser(@PathVariable Integer id) {
         UserDTO userDTO = userService.getUser(id);
         if (userDTO == null) {
-            throw new UserErrorResponse("User not found with ID: " + id);
+            throw new CommonErrorResponse("User not found with ID: " + id);
         }
         return ResponseEntity.ok(userDTO);
     }
@@ -44,7 +40,7 @@ public class UsersRestController {
     public ResponseEntity<UserDTO> getByUsername(@PathVariable String username){
         UserDTO userDTO = userService.getUser(username);
         if(userDTO == null) {
-            throw new UserErrorResponse("Username not found " + username);
+            throw new CommonErrorResponse("Username not found " + username);
         }
         return ResponseEntity.ok(userDTO);
     }
@@ -56,10 +52,10 @@ public class UsersRestController {
             return ResponseEntity.ok(updatedUser);
         } catch (NoSuchElementException e) {
             // Manejar el caso en que el usuario no se encuentre
-            throw new UserErrorResponse("User not found with ID: " + id);
+            throw new CommonErrorResponse("User not found with ID: " + id);
         } catch (Exception e) {
             // Manejar otros posibles errores
-            throw new UserErrorResponse("Error updating user with ID: " + id, e);
+            throw new CommonErrorResponse("Error updating user with ID: " + id, e);
         }
     }
 
@@ -157,7 +153,7 @@ public class UsersRestController {
 
             // Devolver un ResponseEntity con el resultado y el código de estado HTTP OK
         }catch (HibernateQueryException e){
-            throw new UserErrorResponse("Duplicated values", e);
+            throw new CommonErrorResponse("Duplicated values", e);
         }
         return ResponseEntity.ok(resultado);
     }
