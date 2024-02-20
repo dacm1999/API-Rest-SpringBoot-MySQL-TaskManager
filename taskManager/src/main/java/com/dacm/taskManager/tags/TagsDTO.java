@@ -5,7 +5,7 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class TagsDAO {
+public class TagsDTO {
 
     String name;
     String description;
