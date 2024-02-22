@@ -1,4 +1,4 @@
-package com.dacm.taskManager.tags;
+package com.dacm.taskManager.dto;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;

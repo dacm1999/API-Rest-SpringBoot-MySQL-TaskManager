@@ -1,13 +1,16 @@
-package com.dacm.taskManager.tags;
+package com.dacm.taskManager.service.impl;
 
+import com.dacm.taskManager.dto.TagsDTO;
 import com.dacm.taskManager.entity.Tags;
-import com.dacm.taskManager.entity.User;
 import com.dacm.taskManager.repository.TagRepository;
 import com.dacm.taskManager.service.TagService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -93,5 +96,16 @@ public class TagServiceImpl implements TagService {
             tagsDAOList.add(tagsDAO);
         }
         return  tagsDAOList;
+    }
+
+    @Override
+    public int saveManyTags(Tags tags) {
+        int numberOfTagsSaved = 0;
+        Tags existingTag = tagRepository.findByName(tags.getName());
+        if (existingTag == null) {
+            tagRepository.save(tags);
+            numberOfTagsSaved = 1;
+        }
+        return numberOfTagsSaved;
     }
 }

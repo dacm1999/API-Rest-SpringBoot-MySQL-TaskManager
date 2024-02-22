@@ -3,10 +3,10 @@ package com.dacm.taskManager.controller;
 import com.dacm.taskManager.entity.Tags;
 import com.dacm.taskManager.exception.CommonErrorResponse;
 import com.dacm.taskManager.model.AddModel;
+import com.dacm.taskManager.model.TagsErrorModel;
 import com.dacm.taskManager.repository.TagRepository;
-import com.dacm.taskManager.tags.TagServiceImpl;
-import com.dacm.taskManager.tags.TagsDTO;
-import com.dacm.taskManager.user.UserDTO;
+import com.dacm.taskManager.service.impl.TagServiceImpl;
+import com.dacm.taskManager.dto.TagsDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -83,11 +84,42 @@ public class TagsRestController {
 
     @PostMapping(value = "/")
     @PreAuthorize("hasAnyRole('ADMIN','USER')")
-    public ResponseEntity<AddModel> addManyTags(@RequestBody Tags [] tags){
-        AddModel result = null;
+    public ResponseEntity<AddModel> addManyTags(@RequestBody Tags[] tags) {
+        List<TagsDTO> tagsDTOList = tagService.getAllTagsDTO();
+        AddModel result;
+        String reason = "";
+        int total = tags.length;
+        int count_added = 0;
+        int count_failed = 0;
+        List<TagsErrorModel> failed = new ArrayList<>();
+        List<Tags> addedTags = new ArrayList<>();
 
+        for (Tags tag : tags) {
+            boolean repeatCode = false;
+            for (TagsDTO tagsDTO : tagsDTOList) {
+                if (tag.getName().equals(tagsDTO.getName())) {
+                    TagsErrorModel errorModel = new TagsErrorModel(tag.getName(),  "TAG NAME REPEATED");
+                    failed.add(errorModel);
+                    count_failed++;
+                    repeatCode = true;
+                    reason = "Repeated name";
+                    break;
+                }
+            }
+            if (!repeatCode) {
+                int id = tagService.saveManyTags(tag);
+                if (id != -1) {
+                    reason = "Tags added successfully";
+                    addedTags.add(tag);
+                    count_added++;
+                }
+            }
+        }
+
+        result = new AddModel(true, total, count_added, count_failed, (ArrayList) addedTags,(ArrayList) failed, reason);
         return ResponseEntity.ok(result);
     }
+
 
     @PostMapping(value = "/single")
     @PreAuthorize("hasAnyRole('ADMIN','USER')")

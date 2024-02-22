@@ -1,8 +1,12 @@
 package com.dacm.taskManager.model;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.ArrayList;
 
-
+@Getter
+@Setter
 public class AddModel {
     private boolean success;
     private int total;
@@ -23,59 +27,4 @@ public class AddModel {
         this.reason = reason;
     }
 
-    public boolean isSuccess() {
-        return success;
-    }
-
-    public void setSuccess(boolean success) {
-        this.success = success;
-    }
-
-    public int getTotal() {
-        return total;
-    }
-
-    public void setTotal(int total) {
-        this.total = total;
-    }
-
-    public int getNum_added() {
-        return num_added;
-    }
-
-    public void setNum_added(int num_added) {
-        this.num_added = num_added;
-    }
-
-    public int getNum_failed() {
-        return num_failed;
-    }
-
-    public void setNum_failed(int num_failed) {
-        this.num_failed = num_failed;
-    }
-
-    public ArrayList getAdded() {
-        return added;
-    }
-
-    public void setAdded(ArrayList added) {
-        this.added = added;
-    }
-
-    public ArrayList getFailed() {
-        return failed;
-    }
-
-    public void setFailed(ArrayList failed) {
-        this.failed = failed;
-    }
-
-    public String getReason() {
-        return reason;
-    }
-
-    public void setReason(String reason) {
-        this.reason = reason;
-    }
 }

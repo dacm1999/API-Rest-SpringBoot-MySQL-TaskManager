@@ -1,8 +1,9 @@
-package com.dacm.taskManager.user;
+package com.dacm.taskManager.service.impl;
 
 import com.dacm.taskManager.repository.UserRepository;
 import com.dacm.taskManager.entity.User;
 import com.dacm.taskManager.service.UserService;
+import com.dacm.taskManager.dto.UserDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -10,6 +11,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.stream.Collectors;
+
+import static net.sf.jsqlparser.util.validation.metadata.NamedObject.user;
 
 @Service
 @RequiredArgsConstructor
@@ -104,9 +108,34 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ResponseEntity<List<User>> save(User[] users) {
-        List<User> savedUsers = userRepository.saveAll(Arrays.asList(users));
-        return ResponseEntity.status(HttpStatus.CREATED).body(savedUsers);
+    public List<String> getAllUsernames() {
+        List<User> users = userRepository.findAll();
+        List<String> usernames = users.stream()
+                .map(User::getUsername)
+                .collect(Collectors.toList());
+        return usernames;
+    }
+
+    @Override
+    public List<String> getAllEmails() {
+        List<User> users = userRepository.findAll();
+        List<String> emails = users.stream()
+                .map(User::getEmail)
+                .collect(Collectors.toList());
+        return emails;    }
+
+    @Override
+    public int save(User users) {
+
+        Optional<User> existingUser = userRepository.findByUsername(users.getUsername());
+        if (!existingUser.isPresent()) {
+            // Si el usuario no existe, guárdalo en la base de datos
+            userRepository.save(users);
+            // Retorna un valor que indique que el usuario se guardó correctamente
+            return 1;
+        }
+        // Retorna un valor que indique que el usuario ya existía y no se guardó
+        return 0;
     }
 
 

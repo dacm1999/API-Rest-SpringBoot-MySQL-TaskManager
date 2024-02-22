@@ -3,9 +3,10 @@ package com.dacm.taskManager.controller;
 import com.dacm.taskManager.exception.CommonErrorResponse;
 import com.dacm.taskManager.entity.User;
 import com.dacm.taskManager.model.AddModel;
+import com.dacm.taskManager.model.UserErrorModel;
 import com.dacm.taskManager.user.Role;
-import com.dacm.taskManager.user.UserDTO;
-import com.dacm.taskManager.user.UserServiceImpl;
+import com.dacm.taskManager.dto.UserDTO;
+import com.dacm.taskManager.service.impl.UserServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -73,15 +74,21 @@ public class UsersRestController {
 
     @PostMapping("/")
     public ResponseEntity<AddModel> addManyUsers(@RequestBody User[] users) {
-        AddModel resultado = null;
+        AddModel result = null;
 
-        try{
+        try {
             List<UserDTO> addedUsers = new ArrayList<>();
-            List<UserDTO> usersFail = new ArrayList<>();
+            List<UserErrorModel> usersFail = new ArrayList<>();
             String reason = "";
 
             Set<String> existingUsernames = new HashSet<>();
             Set<String> existingEmails = new HashSet<>();
+
+            // Obtener todos los nombres de usuario y correos electrónicos existentes en la base de datos
+            List<String> usernames = userService.getAllUsernames();
+            List<String> emails = userService.getAllEmails();
+            existingUsernames.addAll(usernames);
+            existingEmails.addAll(emails);
 
             // Iterar sobre cada usuario para determinar el éxito de la operación
             for (User usuario : users) {
@@ -91,12 +98,7 @@ public class UsersRestController {
                 // Verificar si el nombre de usuario ya existe
                 if (existingUsernames.contains(username)) {
                     // Agregar el usuario al listado de usuarios fallidos
-                    usersFail.add(UserDTO.builder()
-                            .username(usuario.getUsername())
-                            .firstname(usuario.getFirstname())
-                            .lastname(usuario.getLastname())
-                            .email(usuario.getEmail())
-                            .build());
+                    usersFail.add(new UserErrorModel(username, email));
                     reason = "Username duplicated";
                     continue; // Pasar al siguiente usuario
                 }
@@ -104,31 +106,23 @@ public class UsersRestController {
                 // Verificar si el correo electrónico ya existe
                 if (existingEmails.contains(email)) {
                     // Agregar el usuario al listado de usuarios fallidos
-                    usersFail.add(UserDTO.builder()
-                            .username(usuario.getUsername())
-                            .firstname(usuario.getFirstname())
-                            .lastname(usuario.getLastname())
-                            .email(usuario.getEmail())
-                            .build());
+                    usersFail.add(new UserErrorModel(username, email));
                     reason = "Email duplicated";
                     continue; // Pasar al siguiente usuario
                 }
 
-                // Asegurarse de que el campo 'role' no sea nulo
-                Role role = (usuario.getRole() != null) ? usuario.getRole() : Role.ROLE_USER;
-
-                // Construir el objeto User con el campo 'role' asignado
+                // Construir el objeto User
                 User user = User.builder()
                         .username(username)
                         .password(passwordEncoder.encode(usuario.getPassword()))
                         .firstname(usuario.getFirstname())
                         .lastname(usuario.getLastname())
                         .email(email)
-                        .role(role) // Asignar el campo 'role'
+                        .role(Role.ROLE_USER) // Asignar el rol del usuario
                         .build();
 
                 // Guardar el usuario en la base de datos
-                userService.save(new User[]{user});
+                userService.save(user);
 
                 // Agregar el usuario a los conjuntos de nombres de usuario y correos electrónicos existentes
                 existingUsernames.add(username);
@@ -149,14 +143,15 @@ public class UsersRestController {
 
             // Calcular el éxito de la operación y crear el modelo de respuesta
             boolean success = num_added > 0;
-            resultado = new AddModel(success, total, num_added, num_failed, (ArrayList) addedUsers, (ArrayList) usersFail, reason);
+            result = new AddModel(success, total, num_added, num_failed, (ArrayList) addedUsers, (ArrayList) usersFail, reason);
 
-            // Devolver un ResponseEntity con el resultado y el código de estado HTTP OK
-        }catch (HibernateQueryException e){
+        } catch (HibernateQueryException e) {
             throw new CommonErrorResponse("Duplicated values", e);
         }
-        return ResponseEntity.ok(resultado);
+        return ResponseEntity.ok(result);
     }
+
+
 
     @GetMapping("/allUsers")
     public ResponseEntity<List<UserDTO>> showAllUsers() {
