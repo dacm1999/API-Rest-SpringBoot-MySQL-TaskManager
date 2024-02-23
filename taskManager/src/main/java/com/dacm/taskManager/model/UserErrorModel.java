@@ -10,9 +10,11 @@ import lombok.Setter;
 public class UserErrorModel {
     String username;
     String email;
+    String errorDescription;
 
-    public UserErrorModel(String username, String email) {
+    public UserErrorModel(String username, String email, String errorDescription) {
         this.username = username;
         this.email = email;
+        this.errorDescription = errorDescription;
     }
 }

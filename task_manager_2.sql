@@ -24,14 +24,15 @@ CREATE TABLE IF NOT EXISTS usuarios (
 
 
 -- Creamos la tabla de prioridades
-CREATE TABLE IF NOT EXISTS prioridades (
+CREATE TABLE IF NOT EXISTS priorities (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    nombre VARCHAR(50) NOT NULL,
-    valor INT NOT NULL
-)ENGINE=InnoDB DEFAULT CHARSET=latin1;
+    name VARCHAR(50) NOT NULL,
+    value INT NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
 
 -- Insertamos algunas prioridades
-INSERT INTO prioridades (nombre, valor) VALUES 
+INSERT INTO priorities (name, value) VALUES 
 ('Baja', 1),
 ('Media', 2),
 ('Alta', 3);
@@ -47,7 +48,7 @@ CREATE TABLE IF NOT EXISTS tareas (
     user_id INT NOT NULL,
     prioridad_id INT,  -- Añadimos una columna para la relación con la tabla de prioridades
     FOREIGN KEY (user_id) REFERENCES usuarios(user_id) ON DELETE CASCADE,
-    FOREIGN KEY (prioridad_id) REFERENCES prioridades(id)  -- Establecemos la relación con la tabla de prioridades
+    FOREIGN KEY (prioridad_id) REFERENCES priorities(id)  -- Establecemos la relación con la tabla de prioridades
 )ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- Creamos la tabla de etiquetas

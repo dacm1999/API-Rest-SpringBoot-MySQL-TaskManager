@@ -10,8 +10,8 @@ public class TagsErrorModel {
     String name;
     String errorDescription;
 
-    public TagsErrorModel(String code, String errorDescription) {
-        this.name = code;
+    public TagsErrorModel(String name, String errorDescription) {
+        this.name = name;
         this.errorDescription = errorDescription;
     }
 

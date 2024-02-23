@@ -80,6 +80,7 @@ public class UsersRestController {
             List<UserDTO> addedUsers = new ArrayList<>();
             List<UserErrorModel> usersFail = new ArrayList<>();
             String reason = "";
+            String errorDescription = "";
 
             Set<String> existingUsernames = new HashSet<>();
             Set<String> existingEmails = new HashSet<>();
@@ -95,21 +96,24 @@ public class UsersRestController {
                 String username = usuario.getUsername();
                 String email = usuario.getEmail();
 
+                reason = "Could not add this users  ";
+                errorDescription = "Username duplicated";
                 // Verificar si el nombre de usuario ya existe
                 if (existingUsernames.contains(username)) {
                     // Agregar el usuario al listado de usuarios fallidos
-                    usersFail.add(new UserErrorModel(username, email));
-                    reason = "Username duplicated";
+                    usersFail.add(new UserErrorModel(username, email,errorDescription));
                     continue; // Pasar al siguiente usuario
                 }
 
                 // Verificar si el correo electrónico ya existe
                 if (existingEmails.contains(email)) {
                     // Agregar el usuario al listado de usuarios fallidos
-                    usersFail.add(new UserErrorModel(username, email));
-                    reason = "Email duplicated";
+                    errorDescription = "Email duplicated";
+                    usersFail.add(new UserErrorModel(username, email,errorDescription));
                     continue; // Pasar al siguiente usuario
                 }
+
+
 
                 // Construir el objeto User
                 User user = User.builder()
@@ -125,6 +129,7 @@ public class UsersRestController {
                 userService.save(user);
 
                 // Agregar el usuario a los conjuntos de nombres de usuario y correos electrónicos existentes
+                reason = "Could not add this users";
                 existingUsernames.add(username);
                 existingEmails.add(email);
 

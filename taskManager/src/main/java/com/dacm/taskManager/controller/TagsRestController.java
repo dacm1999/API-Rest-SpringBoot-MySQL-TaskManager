@@ -30,10 +30,10 @@ public class TagsRestController {
 
     @GetMapping(value = "/{tagName}")
     @PreAuthorize("hasAnyRole('ADMIN','USER')")
-    public ResponseEntity<TagsDTO> getByTagName(@PathVariable String tagName){
+    public ResponseEntity<TagsDTO> getByTagName(@PathVariable String tagName) {
         TagsDTO tagsDAO = tagService.getTag(tagName);
 
-        if(tagsDAO == null){
+        if (tagsDAO == null) {
             throw new CommonErrorResponse("Tag not found " + tagName);
         }
 
@@ -42,10 +42,10 @@ public class TagsRestController {
 
     @GetMapping(value = "/id/{id}")
     @PreAuthorize("hasAnyRole('ADMIN','USER')")
-    public ResponseEntity<TagsDTO> getById(@PathVariable Integer id){
+    public ResponseEntity<TagsDTO> getById(@PathVariable Integer id) {
         TagsDTO tagsDAO = tagService.getTagById(id);
 
-        if(tagsDAO == null){
+        if (tagsDAO == null) {
             throw new CommonErrorResponse("Tag not found by ID " + id);
         }
 
@@ -55,8 +55,8 @@ public class TagsRestController {
 
     @DeleteMapping(value = "/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<TagsDTO> deleteByID(@PathVariable Integer id){
-        try{
+    public ResponseEntity<TagsDTO> deleteByID(@PathVariable Integer id) {
+        try {
             TagsDTO deletedByTagId = tagService.deleteById(id);
             return ResponseEntity.ok(deletedByTagId);
         } catch (NoSuchElementException e) {
@@ -68,9 +68,9 @@ public class TagsRestController {
 
     @PutMapping(value = "/{id}")
     @PreAuthorize("hasAnyRole('ADMIN','USER')")
-    public ResponseEntity<TagsDTO> updateTagByID(@PathVariable Integer id, @RequestBody TagsDTO updatedTagDTO){
+    public ResponseEntity<TagsDTO> updateTagByID(@PathVariable Integer id, @RequestBody TagsDTO updatedTagDTO) {
         try {
-            TagsDTO updatedTag = tagService.updateTagById(id,updatedTagDTO);
+            TagsDTO updatedTag = tagService.updateTagById(id, updatedTagDTO);
             return ResponseEntity.ok(updatedTag);
         } catch (NoSuchElementException e) {
             // Manejar el caso en que el usuario no se encuentre
@@ -98,11 +98,11 @@ public class TagsRestController {
             boolean repeatCode = false;
             for (TagsDTO tagsDTO : tagsDTOList) {
                 if (tag.getName().equals(tagsDTO.getName())) {
-                    TagsErrorModel errorModel = new TagsErrorModel(tag.getName(),  "TAG NAME REPEATED");
+                    TagsErrorModel errorModel = new TagsErrorModel(tag.getName(), "TAG NAME REPEATED");
                     failed.add(errorModel);
                     count_failed++;
                     repeatCode = true;
-                    reason = "Repeated name";
+                    reason = "COULD NOT ADD THIS TAGS";
                     break;
                 }
             }
@@ -116,26 +116,48 @@ public class TagsRestController {
             }
         }
 
-        result = new AddModel(true, total, count_added, count_failed, (ArrayList) addedTags,(ArrayList) failed, reason);
+        result = new AddModel(true, total, count_added, count_failed, (ArrayList) addedTags, (ArrayList) failed, reason);
         return ResponseEntity.ok(result);
     }
 
-
     @PostMapping(value = "/single")
     @PreAuthorize("hasAnyRole('ADMIN','USER')")
-    public ResponseEntity<TagsDTO> addSingleTag(@RequestBody Tags tags){
+    public ResponseEntity<?> addSingleTag(@RequestBody Tags tags) {
         TagsDTO tagsDTO = null;
 
-        Tags savedTags = tagsRepository.save(tags); // Saving the Tags object using the repository
+    // Get all existing tags DTOs and initialize a list to store failed operations
+        List<TagsDTO> tagsDTOList = tagService.getAllTagsDTO();
+        List<TagsErrorModel> failed = new ArrayList<>();
 
-        tagsDTO = tagService.convertToDTO(savedTags); // Assuming you have a method to convert Tags to TagsDTO
+        boolean repeatCode = false; // Move this declaration out of the for loop
 
+    // Iterate through existing tags DTOs to check for duplicates
+        for (TagsDTO tempTagDTO : tagsDTOList) {
+            // Check if the tag name already exists
+            if (tags.getName().equals(tempTagDTO.getName())) {
+                // If duplicate found, create an error model and add it to the list of failed operations
+                TagsErrorModel errorModel = new TagsErrorModel(tags.getName(), "COULD NOT ADD BECAUSE TAG NAME IS DUPLICATED");
+                repeatCode = true;
+                failed.add(errorModel);
+                return ResponseEntity.ok(failed); // Return the list of failed operations as response
+            }
+        }
+
+        // If no duplicate found, proceed to save the new tag
+        if (!repeatCode) {
+            // Save the Tags object using the repository
+            Tags savedTags = tagsRepository.save(tags);
+            // Convert the saved tag to DTO
+            tagsDTO = tagService.convertToDTO(savedTags); // Assuming you have a method to convert Tags to TagsDTO
+        }
+
+        // Return the DTO of the saved tag or null if no duplicate was found
         return ResponseEntity.ok(tagsDTO);
     }
 
     @GetMapping(value = "/allTags")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<List<TagsDTO>> showAllTags(){
+    public ResponseEntity<List<TagsDTO>> showAllTags() {
         List<TagsDTO> tagsDAOList = tagService.getAllTagsDTO();
         return ResponseEntity.ok(tagsDAOList);
     }
