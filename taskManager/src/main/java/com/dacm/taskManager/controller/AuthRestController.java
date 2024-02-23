@@ -1,9 +1,9 @@
 package com.dacm.taskManager.controller;
 
-import com.dacm.taskManager.authentication.RegisterRequest;
-import com.dacm.taskManager.authentication.AuthResponse;
-import com.dacm.taskManager.authentication.LoginRequest;
-import com.dacm.taskManager.authentication.AuthService;
+import com.dacm.taskManager.responses.RegisterRequest;
+import com.dacm.taskManager.responses.AuthResponse;
+import com.dacm.taskManager.responses.LoginRequest;
+import com.dacm.taskManager.service.impl.AuthServiceImpl;
 import com.dacm.taskManager.exception.AuthErrorResponse;
 import com.dacm.taskManager.repository.UserRepository;
 import io.micrometer.common.util.StringUtils;
@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
 @CrossOrigin(origins = {"http://localhost:8080"})
 public class AuthRestController {
 
-    private final AuthService authService;
+    private final AuthServiceImpl authService;
     private final UserRepository userRepository;
 
     @PostMapping(value = "/login")

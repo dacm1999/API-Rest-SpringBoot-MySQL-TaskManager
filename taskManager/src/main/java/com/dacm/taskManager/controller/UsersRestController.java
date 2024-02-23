@@ -4,7 +4,7 @@ import com.dacm.taskManager.exception.CommonErrorResponse;
 import com.dacm.taskManager.entity.User;
 import com.dacm.taskManager.model.AddModel;
 import com.dacm.taskManager.model.UserErrorModel;
-import com.dacm.taskManager.user.Role;
+import com.dacm.taskManager.enums.Role;
 import com.dacm.taskManager.dto.UserDTO;
 import com.dacm.taskManager.service.impl.UserServiceImpl;
 import lombok.RequiredArgsConstructor;

@@ -1,4 +1,4 @@
-package com.dacm.taskManager.user;
+package com.dacm.taskManager.responses;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

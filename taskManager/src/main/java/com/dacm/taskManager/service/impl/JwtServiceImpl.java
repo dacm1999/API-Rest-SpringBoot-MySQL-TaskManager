@@ -1,7 +1,8 @@
-package com.dacm.taskManager.jwt;
+package com.dacm.taskManager.service.impl;
 
 import com.dacm.taskManager.entity.User;
 import com.dacm.taskManager.exception.CommonErrorResponse;
+import com.dacm.taskManager.service.JwtService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
@@ -18,11 +19,10 @@ import java.util.Map;
 import java.util.function.Function;
 
 @Service
-public class JwtService {
+public class JwtServiceImpl implements JwtService {
 
     @Value("${jwt.secret}")
     private String SECRET_KEY;
-
 
     public String getToken(User user) {
         return getToken(new HashMap<>(), user);
@@ -48,45 +48,49 @@ public class JwtService {
                 .compact(); // Compact and return the token as a string
     }
 
-
     private SecretKey getKey() {
         byte[] keyBytes = Decoders.BASE64.decode(SECRET_KEY);
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
+    @Override
     public String getUsernameFromToken(String token) {
         return getClaim(token, Claims::getSubject);
     }
 
+    @Override
     public boolean isTokenValid(String token, UserDetails userDetails) {
         final String username = getUsernameFromToken(token);
         return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
     }
 
     private Claims getAllClaims(String token) {
-        try{
+        try {
             return Jwts
                     .parser()
                     .verifyWith(getKey())
                     .build()
                     .parseSignedClaims(token)
                     .getPayload();
-        }catch (ExpiredJwtException e){
-            throw new CommonErrorResponse("Token has expired",e);
+        } catch (ExpiredJwtException e) {
+            throw new CommonErrorResponse("Token has expired", e);
         }
 
     }
 
+    @Override
     public <T> T getClaim(String token, Function<Claims, T> claimsResolver) {
         final Claims claims = getAllClaims(token);
         return claimsResolver.apply(claims);
     }
 
-    private Date getExpiration(String token) {
+    @Override
+    public Date getExpiration(String token) {
         return getClaim(token, Claims::getExpiration);
     }
 
-    private boolean isTokenExpired(String token) {
+    @Override
+    public boolean isTokenExpired(String token) {
         return getExpiration(token).before(new Date());
     }
 

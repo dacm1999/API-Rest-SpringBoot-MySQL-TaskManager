@@ -1,6 +1,7 @@
 package com.dacm.taskManager.jwt;
 
 import com.dacm.taskManager.exception.CommonErrorResponse;
+import com.dacm.taskManager.service.impl.JwtServiceImpl;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -22,7 +23,7 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
-    private final JwtService jwtService;
+    private final JwtServiceImpl jwtService;
     private final UserDetailsService userDetailsService;
 
 

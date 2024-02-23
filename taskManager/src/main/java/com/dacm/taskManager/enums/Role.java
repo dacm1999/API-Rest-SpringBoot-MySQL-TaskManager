@@ -1,4 +1,4 @@
-package com.dacm.taskManager.user;
+package com.dacm.taskManager.enums;
 
 public enum Role {
     ROLE_ADMIN,

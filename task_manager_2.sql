@@ -30,12 +30,6 @@ CREATE TABLE IF NOT EXISTS priorities (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
--- Insertamos algunas prioridades
-INSERT INTO priorities (name, value) VALUES 
-('Baja', 1),
-('Media', 2),
-('Alta', 3);
-
 -- Creamos la tabla de tareas
 CREATE TABLE IF NOT EXISTS tasks (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -58,11 +52,6 @@ CREATE TABLE IF NOT EXISTS Tags (
     description varchar(200) NOT NULL
 )ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
--- Insertamos algunas etiquetas
-INSERT INTO TAGS (name, description) VALUES 
-('Trabajo','Tareas del trabajo'),
-('Personal','Tareas personales'),
-('Urgente','Primera providad');
 
 -- Creamos la tabla de relación entre tareas y etiquetas
 CREATE TABLE IF NOT EXISTS task_tag (
