@@ -17,7 +17,7 @@ public class Priorities {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    public int priorityId;
+    public int id;
 
     @Column(name = "name")
     public String name;

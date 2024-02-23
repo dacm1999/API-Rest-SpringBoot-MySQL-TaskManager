@@ -122,39 +122,40 @@ public class PrioritiesRestController {
 
     @PostMapping(value = "/")
     @PreAuthorize("hasAnyRole('ADMIN','USER')")
-    public ResponseEntity<AddModel> addManyPriorities(@RequestBody Priorities [] priorities){
+    public ResponseEntity<AddModel> addManyPriorities(@RequestBody Priorities[] priorities) {
         prioritiesDTOList = prioritiesService.getAllPrioritiesDTO();
         AddModel result;
         String reason = "";
         int total = priorities.length;
         int count_added = 0;
         int count_failed = 0;
+        List<Priorities> added = new ArrayList<>();
         List<TagsErrorModel> failed = new ArrayList<>();
-        List<Priorities> added= new ArrayList<>();
 
-        for(Priorities tempPriorities : priorities){
+        for (Priorities tempPriorities : priorities) {
             boolean repeatName = false;
-            for(PrioritiesDTO dto : prioritiesDTOList){
-                if(tempPriorities.getName().equals(dto.getName())){
-                    TagsErrorModel errorModel = new TagsErrorModel(tempPriorities.getName(),"DUPLICATED VALUE" );
+            for (PrioritiesDTO dto : prioritiesDTOList) {
+                if (tempPriorities.getName().equals(dto.getName())) {
+                    TagsErrorModel errorModel = new TagsErrorModel(tempPriorities.getName(), "DUPLICATED VALUE");
                     failed.add(errorModel);
                     count_failed++;
                     repeatName = true;
                     reason = "COULD NOT ADD THIS NAMES";
-                    break;
-                }
-
-                if(!repeatName){
-                    prioritiesService.saveManyPriorities(tempPriorities);
-                    reason = "Names added successfully";
-                    added.add(tempPriorities);
-                    count_added++;
+                    break; // Break out of the inner loop if duplicate name is found
                 }
             }
+
+            if (!repeatName) {
+                prioritiesService.saveManyPriorities(tempPriorities);
+                reason = "Names added successfully";
+                added.add(tempPriorities);
+                count_added++;
+            }
         }
-        result = new AddModel(true,total,count_added,count_failed,(ArrayList) added,(ArrayList)failed, reason);
+        result = new AddModel(true, total, count_added, count_failed, (ArrayList<Priorities>) added, (ArrayList<TagsErrorModel>) failed, reason);
         return ResponseEntity.ok(result);
     }
+
 
 
 }
