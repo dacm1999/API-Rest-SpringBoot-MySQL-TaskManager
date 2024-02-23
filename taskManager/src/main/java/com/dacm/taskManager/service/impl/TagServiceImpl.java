@@ -23,10 +23,10 @@ public class TagServiceImpl implements TagService {
 
     @Override
     public TagsDTO convertToDTO(Tags tags) {
-        TagsDTO tagsDAO = new TagsDTO();
-        tagsDAO.setName(tags.getName());
-        tagsDAO.setDescription(tags.getDescription());
-        return tagsDAO;
+        TagsDTO tagsDTO = new TagsDTO();
+        tagsDTO.setName(tags.getName());
+        tagsDTO.setDescription(tags.getDescription());
+        return tagsDTO;
     }
 
     @Override
@@ -80,9 +80,7 @@ public class TagServiceImpl implements TagService {
     @Override
     public TagsDTO deleteById(Integer id) {
         Tags tags = tagRepository.findById(id).orElseThrow(() -> new NoSuchElementException("Tag not found with id: " + id));
-
         tagRepository.deleteById(id);
-
         return convertToDTO(tags);
     }
 
