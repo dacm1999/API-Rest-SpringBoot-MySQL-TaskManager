@@ -4,14 +4,13 @@ CREATE DATABASE IF NOT EXISTS gestor_tasks;
 
 -- Nos aseguramos de usar la base de datos que acabamos de crear
 USE gestor_tasks;
-DROP TABLE IF EXISTS `usuarios`;
-DROP TABLE IF EXISTS `roles`;
-DROP TABLE IF EXISTS `prioridades`;
+DROP TABLE IF EXISTS `users`;
+DROP TABLE IF EXISTS `priorities`;
 DROP TABLE IF EXISTS `tareas`;
-DROP TABLE IF EXISTS `etiquetas`;
+DROP TABLE IF EXISTS `tags`;
 
 -- Creamos la tabla de usuarios
-CREATE TABLE IF NOT EXISTS usuarios (
+CREATE TABLE IF NOT EXISTS users (
     user_id INT AUTO_INCREMENT PRIMARY KEY,
     username VARCHAR(100) NOT NULL UNIQUE,
     firstname VARCHAR(100) NOT NULL,
@@ -38,18 +37,19 @@ INSERT INTO priorities (name, value) VALUES
 ('Alta', 3);
 
 -- Creamos la tabla de tareas
-CREATE TABLE IF NOT EXISTS tareas (
+CREATE TABLE IF NOT EXISTS tasks (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    nombre VARCHAR(100) NOT NULL,
-    descripcion TEXT,
-    estado ENUM('Pendiente', 'Completada') NOT NULL,
-    fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    fecha_vencimiento DATE,
+    name VARCHAR(100) NOT NULL,
+    description TEXT,
+    status ENUM('Pending', 'Completed') NOT NULL,
+    creation_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    due_date DATE,
     user_id INT NOT NULL,
-    prioridad_id INT,  -- Añadimos una columna para la relación con la tabla de prioridades
-    FOREIGN KEY (user_id) REFERENCES usuarios(user_id) ON DELETE CASCADE,
-    FOREIGN KEY (prioridad_id) REFERENCES priorities(id)  -- Establecemos la relación con la tabla de prioridades
-)ENGINE=InnoDB DEFAULT CHARSET=latin1;
+    priority_id INT,
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
+    FOREIGN KEY (priority_id) REFERENCES priorities(id)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
 
 -- Creamos la tabla de etiquetas
 CREATE TABLE IF NOT EXISTS Tags (
@@ -65,13 +65,14 @@ INSERT INTO TAGS (name, description) VALUES
 ('Urgente','Primera providad');
 
 -- Creamos la tabla de relación entre tareas y etiquetas
-CREATE TABLE IF NOT EXISTS tarea_etiqueta (
-    tarea_id INT,
-    etiqueta_id INT,
-    PRIMARY KEY (tarea_id, etiqueta_id),
-    FOREIGN KEY (tarea_id) REFERENCES tareas(id) ON DELETE CASCADE,
-    FOREIGN KEY (etiqueta_id) REFERENCES tags(id) ON DELETE CASCADE
-)ENGINE=InnoDB DEFAULT CHARSET=latin1;
+CREATE TABLE IF NOT EXISTS task_tag (
+    task_id INT,
+    tag_id INT,
+    PRIMARY KEY (task_id, tag_id),
+    FOREIGN KEY (task_id) REFERENCES tasks(id) ON DELETE CASCADE,
+    FOREIGN KEY (tag_id) REFERENCES tags(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
 
 -- Agregamos una sentencia TRUNCATE TABLE para cada tabla
-TRUNCATE TABLE tarea_etiqueta;
+TRUNCATE TABLE task_tag;
