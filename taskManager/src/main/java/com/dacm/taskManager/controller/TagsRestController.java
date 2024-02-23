@@ -53,6 +53,29 @@ public class TagsRestController {
 
     }
 
+    @GetMapping(value = "/allTags")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<List<TagsDTO>> showAllTags() {
+        List<TagsDTO> tagsDAOList = tagService.getAllTagsDTO();
+        return ResponseEntity.ok(tagsDAOList);
+    }
+
+    @PutMapping(value = "/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN','USER')")
+    public ResponseEntity<TagsDTO> updateTagByID(@PathVariable Integer id, @RequestBody TagsDTO updatedTagDTO) {
+        try {
+            TagsDTO updatedTag = tagService.updateTagById(id, updatedTagDTO);
+            return ResponseEntity.ok(updatedTag);
+        } catch (NoSuchElementException e) {
+            // Manejar el caso en que el usuario no se encuentre
+            throw new CommonErrorResponse("Tag not found with ID: " + id);
+        } catch (Exception e) {
+            // Manejar otros posibles errores
+            throw new CommonErrorResponse("Error updating user with ID: " + id, e);
+        }
+
+    }
+
     @DeleteMapping(value = "/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<TagsDTO> deleteByID(@PathVariable Integer id) {
@@ -66,24 +89,44 @@ public class TagsRestController {
         }
     }
 
-    @PutMapping(value = "/{id}")
+    @PostMapping(value = "/single")
     @PreAuthorize("hasAnyRole('ADMIN','USER')")
-    public ResponseEntity<TagsDTO> updateTagByID(@PathVariable Integer id, @RequestBody TagsDTO updatedTagDTO) {
-        try {
-            TagsDTO updatedTag = tagService.updateTagById(id, updatedTagDTO);
-            return ResponseEntity.ok(updatedTag);
-        } catch (NoSuchElementException e) {
-            // Manejar el caso en que el usuario no se encuentre
-            throw new CommonErrorResponse("User not found with ID: " + id);
-        } catch (Exception e) {
-            // Manejar otros posibles errores
-            throw new CommonErrorResponse("Error updating user with ID: " + id, e);
+    public ResponseEntity<?> addSingleTag(@RequestBody Tags tags) {
+        TagsDTO tagsDTO = null;
+
+        // Get all existing tags DTOs and initialize a list to store failed operations
+        List<TagsDTO> tagsDTOList = tagService.getAllTagsDTO();
+        List<TagsErrorModel> failed = new ArrayList<>();
+
+        boolean repeatCode = false; // Move this declaration out of the for loop
+
+        // Iterate through existing tags DTOs to check for duplicates
+        for (TagsDTO tempTagDTO : tagsDTOList) {
+            // Check if the tag name already exists
+            if (tags.getName().equals(tempTagDTO.getName())) {
+                // If duplicate found, create an error model and add it to the list of failed operations
+                TagsErrorModel errorModel = new TagsErrorModel(tags.getName(), "COULD NOT ADD BECAUSE TAG NAME IS DUPLICATED");
+                repeatCode = true;
+                failed.add(errorModel);
+                return ResponseEntity.ok(failed); // Return the list of failed operations as response
+//                return ResponseEntity.badRequest(failed); // Return the list of failed operations as response
+            }
         }
 
+        // If no duplicate found, proceed to save the new tag
+        if (!repeatCode) {
+            // Save the Tags object using the repository
+            Tags savedTags = tagsRepository.save(tags);
+            // Convert the saved tag to DTO
+            tagsDTO = tagService.convertToDTO(savedTags); // Assuming you have a method to convert Tags to TagsDTO
+        }
+
+        // Return the DTO of the saved tag or null if no duplicate was found
+        return ResponseEntity.ok(tagsDTO);
     }
 
     @PostMapping(value = "/")
-    @PreAuthorize("hasAnyRole('ADMIN','USER')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<AddModel> addManyTags(@RequestBody Tags[] tags) {
         List<TagsDTO> tagsDTOList = tagService.getAllTagsDTO();
         AddModel result;
@@ -118,48 +161,6 @@ public class TagsRestController {
 
         result = new AddModel(true, total, count_added, count_failed, (ArrayList) addedTags, (ArrayList) failed, reason);
         return ResponseEntity.ok(result);
-    }
-
-    @PostMapping(value = "/single")
-    @PreAuthorize("hasAnyRole('ADMIN','USER')")
-    public ResponseEntity<?> addSingleTag(@RequestBody Tags tags) {
-        TagsDTO tagsDTO = null;
-
-    // Get all existing tags DTOs and initialize a list to store failed operations
-        List<TagsDTO> tagsDTOList = tagService.getAllTagsDTO();
-        List<TagsErrorModel> failed = new ArrayList<>();
-
-        boolean repeatCode = false; // Move this declaration out of the for loop
-
-    // Iterate through existing tags DTOs to check for duplicates
-        for (TagsDTO tempTagDTO : tagsDTOList) {
-            // Check if the tag name already exists
-            if (tags.getName().equals(tempTagDTO.getName())) {
-                // If duplicate found, create an error model and add it to the list of failed operations
-                TagsErrorModel errorModel = new TagsErrorModel(tags.getName(), "COULD NOT ADD BECAUSE TAG NAME IS DUPLICATED");
-                repeatCode = true;
-                failed.add(errorModel);
-                return ResponseEntity.ok(failed); // Return the list of failed operations as response
-            }
-        }
-
-        // If no duplicate found, proceed to save the new tag
-        if (!repeatCode) {
-            // Save the Tags object using the repository
-            Tags savedTags = tagsRepository.save(tags);
-            // Convert the saved tag to DTO
-            tagsDTO = tagService.convertToDTO(savedTags); // Assuming you have a method to convert Tags to TagsDTO
-        }
-
-        // Return the DTO of the saved tag or null if no duplicate was found
-        return ResponseEntity.ok(tagsDTO);
-    }
-
-    @GetMapping(value = "/allTags")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<List<TagsDTO>> showAllTags() {
-        List<TagsDTO> tagsDAOList = tagService.getAllTagsDTO();
-        return ResponseEntity.ok(tagsDAOList);
     }
 
 }
