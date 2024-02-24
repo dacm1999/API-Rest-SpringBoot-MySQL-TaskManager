@@ -15,6 +15,6 @@ public class TasksDTO {
     String status;
     String creation_date;
     String due_date;
-    int userId;
-    int priority;
+    String priority;
+
 }

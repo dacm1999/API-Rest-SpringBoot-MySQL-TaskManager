@@ -73,11 +73,7 @@ public class PrioritiesRestController {
             prioritiesDTO = prioritiesService.updateById(id, updatedDTO);
             return ResponseEntity.ok(prioritiesDTO);
         } catch (NoSuchElementException e) {
-            // Manejar el caso en que el usuario no se encuentre
             throw new CommonErrorResponse("User not found with ID: " + id);
-        } catch (Exception e) {
-            // Manejar otros posibles errores
-            throw new CommonErrorResponse("Error updating user with ID: " + id, e);
         }
     }
 
