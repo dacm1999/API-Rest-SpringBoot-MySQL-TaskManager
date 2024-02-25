@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
+
 @Data
 @NoArgsConstructor
 public class TasksDTO {
@@ -13,8 +15,8 @@ public class TasksDTO {
     String name;
     String description;
     String status;
-    String creation_date;
-    String due_date;
+    LocalDate creation_date;
+    LocalDate due_date;
     String priority;
 
 }

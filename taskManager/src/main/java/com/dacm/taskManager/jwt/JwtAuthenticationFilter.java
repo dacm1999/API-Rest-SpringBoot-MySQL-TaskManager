@@ -1,7 +1,7 @@
 package com.dacm.taskManager.jwt;
 
 import com.dacm.taskManager.exception.CommonErrorResponse;
-import com.dacm.taskManager.service.impl.JwtServiceImpl;
+import com.dacm.taskManager.service.implementService.JwtServiceImpl;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

@@ -7,6 +7,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
+
 @Data
 @Builder
 @NoArgsConstructor
@@ -30,10 +32,10 @@ public class Tasks {
     public Status status;
 
     @Column(name = "creation_date")
-    public String creation_date;
+    public LocalDate creation_date;
 
     @Column(name = "due_date")
-    public String due_date;
+    public LocalDate due_date;
 
     @Column(name = "user_id")
     public int user_id;

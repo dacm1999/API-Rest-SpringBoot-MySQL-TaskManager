@@ -12,7 +12,9 @@ INSERT INTO priorities (name, value) VALUES
 -- Insertamos algunas tareas
 INSERT INTO tasks (name, description, status, due_date, user_id, priority_id) VALUES 
 ('Task 1', 'Description for Task 1', 'Pending', '2024-02-25', 1, 1),
-('Task 2', 'Description for Task 2', 'Completed', '2024-02-23', 2, 2);
+('Task 2', 'Description for Task 2', 'Completed', '2024-02-29', 2, 2),
+('Task 3', 'Description for Task 3', 'Pending', '2024-02-28', 2, 2),
+('Task 4', 'Description for Task 4', 'Pending', '2024-02-27', 2, 2);
 
 -- Insertamos algunas etiquetas
 INSERT INTO tags (name, description) VALUES 

@@ -1,16 +1,13 @@
-package com.dacm.taskManager.service.impl;
+package com.dacm.taskManager.service.implementService;
 
 import com.dacm.taskManager.dto.TagsDTO;
 import com.dacm.taskManager.entity.Tags;
 import com.dacm.taskManager.repository.TagRepository;
 import com.dacm.taskManager.service.TagService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
 

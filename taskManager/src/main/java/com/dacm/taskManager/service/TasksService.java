@@ -8,7 +8,6 @@ import java.util.List;
 
 public interface TasksService {
 
-    String formatDateTime(LocalDateTime dateTime);
     TasksDTO convertToDTO(Tasks tasks);
     TasksDTO getById(int id);
     TasksDTO geyByUserId(int id);

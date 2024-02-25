@@ -3,7 +3,7 @@ package com.dacm.taskManager.controller;
 import com.dacm.taskManager.responses.RegisterRequest;
 import com.dacm.taskManager.responses.AuthResponse;
 import com.dacm.taskManager.responses.LoginRequest;
-import com.dacm.taskManager.service.impl.AuthServiceImpl;
+import com.dacm.taskManager.service.implementService.AuthServiceImpl;
 import com.dacm.taskManager.exception.AuthErrorResponse;
 import com.dacm.taskManager.repository.UserRepository;
 import io.micrometer.common.util.StringUtils;

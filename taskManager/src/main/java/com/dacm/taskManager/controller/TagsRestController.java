@@ -5,7 +5,7 @@ import com.dacm.taskManager.exception.CommonErrorResponse;
 import com.dacm.taskManager.model.AddModel;
 import com.dacm.taskManager.model.TagsErrorModel;
 import com.dacm.taskManager.repository.TagRepository;
-import com.dacm.taskManager.service.impl.TagServiceImpl;
+import com.dacm.taskManager.service.implementService.TagServiceImpl;
 import com.dacm.taskManager.dto.TagsDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -141,7 +141,9 @@ public class TagsRestController {
             boolean repeatCode = false;
             for (TagsDTO tagsDTO : tagsDTOList) {
                 if (tag.getName().equals(tagsDTO.getName())) {
-                    TagsErrorModel errorModel = new TagsErrorModel(tag.getName(), "TAG NAME REPEATED");
+                    TagsErrorModel errorModel = new TagsErrorModel(
+                            tag.getName()
+                            , "TAG NAME REPEATED");
                     failed.add(errorModel);
                     count_failed++;
                     repeatCode = true;

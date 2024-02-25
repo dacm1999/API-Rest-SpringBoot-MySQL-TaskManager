@@ -1,19 +1,15 @@
-package com.dacm.taskManager.service.impl;
+package com.dacm.taskManager.service.implementService;
 
 import com.dacm.taskManager.repository.UserRepository;
 import com.dacm.taskManager.entity.User;
 import com.dacm.taskManager.service.UserService;
 import com.dacm.taskManager.dto.UserDTO;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
 import java.util.stream.Collectors;
-
-import static net.sf.jsqlparser.util.validation.metadata.NamedObject.user;
 
 @Service
 @RequiredArgsConstructor

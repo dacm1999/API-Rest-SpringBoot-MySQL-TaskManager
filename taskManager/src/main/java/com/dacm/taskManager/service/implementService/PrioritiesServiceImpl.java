@@ -1,4 +1,4 @@
-package com.dacm.taskManager.service.impl;
+package com.dacm.taskManager.service.implementService;
 
 import com.dacm.taskManager.dto.PrioritiesDTO;
 import com.dacm.taskManager.entity.Priorities;

@@ -1,16 +1,13 @@
 package com.dacm.taskManager.controller;
 
 import com.dacm.taskManager.dto.PrioritiesDTO;
-import com.dacm.taskManager.dto.TagsDTO;
 import com.dacm.taskManager.entity.Priorities;
 import com.dacm.taskManager.exception.CommonErrorResponse;
-import com.dacm.taskManager.exception.ErrorResponse;
 import com.dacm.taskManager.model.AddModel;
 import com.dacm.taskManager.model.PrioritiesErrorModel;
 import com.dacm.taskManager.model.TagsErrorModel;
 import com.dacm.taskManager.repository.PrioritiesRepository;
-import com.dacm.taskManager.service.PrioritiesService;
-import com.dacm.taskManager.service.impl.PrioritiesServiceImpl;
+import com.dacm.taskManager.service.implementService.PrioritiesServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,7 +18,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor

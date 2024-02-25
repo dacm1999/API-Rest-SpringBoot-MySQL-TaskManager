@@ -6,7 +6,7 @@ import com.dacm.taskManager.model.AddModel;
 import com.dacm.taskManager.model.UserErrorModel;
 import com.dacm.taskManager.enums.Role;
 import com.dacm.taskManager.dto.UserDTO;
-import com.dacm.taskManager.service.impl.UserServiceImpl;
+import com.dacm.taskManager.service.implementService.UserServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
