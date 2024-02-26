@@ -6,12 +6,16 @@ import com.dacm.taskManager.model.AddModel;
 import com.dacm.taskManager.model.UserErrorModel;
 import com.dacm.taskManager.enums.Role;
 import com.dacm.taskManager.dto.UserDTO;
+import com.dacm.taskManager.responses.UserPaginationResponse;
 import com.dacm.taskManager.service.implementService.UserServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.orm.hibernate5.HibernateQueryException;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -38,12 +42,40 @@ public class UsersRestController {
     }
 
     @GetMapping(value = "username/{username}")
-    public ResponseEntity<UserDTO> getByUsername(@PathVariable String username){
+    public ResponseEntity<UserDTO> getByUsername(@PathVariable String username) {
         UserDTO userDTO = userService.getUser(username);
-        if(userDTO == null) {
+        if (userDTO == null) {
             throw new CommonErrorResponse("Username not found " + username);
         }
         return ResponseEntity.ok(userDTO);
+    }
+
+    @GetMapping("/allUsers")
+    public ResponseEntity<UserPaginationResponse> showAllUsers(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(required = false) String username,
+            @RequestParam(required = false) String firstname,
+            @RequestParam(required = false) String lastname,
+            @RequestParam(required = false) String email
+    ) {
+        Page<UserDTO> userPage = userService.getAllUsersDTO(
+                PageRequest.of(page, size),
+                username,
+                firstname,
+                lastname,
+                email
+        );
+
+        UserPaginationResponse response = new UserPaginationResponse();
+        response.setUsers(userPage.getContent());
+        response.setTotalPages(userPage.getTotalPages());
+        response.setTotalElements(userPage.getTotalElements());
+        response.setNumber(userPage.getNumber());
+        response.setNumberOfElements(userPage.getNumberOfElements());
+        response.setSize(userPage.getSize());
+
+        return ResponseEntity.ok(response);
     }
 
     @PutMapping(value = "/{id}")
@@ -101,7 +133,7 @@ public class UsersRestController {
                 // Verificar si el nombre de usuario ya existe
                 if (existingUsernames.contains(username)) {
                     // Agregar el usuario al listado de usuarios fallidos
-                    usersFail.add(new UserErrorModel(username, email,errorDescription));
+                    usersFail.add(new UserErrorModel(username, email, errorDescription));
                     continue; // Pasar al siguiente usuario
                 }
 
@@ -109,10 +141,9 @@ public class UsersRestController {
                 if (existingEmails.contains(email)) {
                     // Agregar el usuario al listado de usuarios fallidos
                     errorDescription = "Email duplicated";
-                    usersFail.add(new UserErrorModel(username, email,errorDescription));
+                    usersFail.add(new UserErrorModel(username, email, errorDescription));
                     continue; // Pasar al siguiente usuario
                 }
-
 
 
                 // Construir el objeto User
@@ -154,14 +185,6 @@ public class UsersRestController {
             throw new CommonErrorResponse("Duplicated values", e);
         }
         return ResponseEntity.ok(result);
-    }
-
-
-
-    @GetMapping("/allUsers")
-    public ResponseEntity<List<UserDTO>> showAllUsers() {
-        List<UserDTO> userDTOList = userService.getAllUsersDTO();
-        return ResponseEntity.ok(userDTOList);
     }
 
 }

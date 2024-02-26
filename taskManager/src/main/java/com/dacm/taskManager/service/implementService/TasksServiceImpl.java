@@ -2,16 +2,19 @@ package com.dacm.taskManager.service.implementService;
 
 import com.dacm.taskManager.dto.TasksDTO;
 import com.dacm.taskManager.entity.Tasks;
+import com.dacm.taskManager.entity.User;
 import com.dacm.taskManager.enums.Status;
 import com.dacm.taskManager.exception.CommonErrorResponse;
-import com.dacm.taskManager.repository.TasksRepository;
+import com.dacm.taskManager.repository.TaskRepository;
 import com.dacm.taskManager.service.TasksService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +25,7 @@ import java.util.Optional;
 public class TasksServiceImpl implements TasksService {
 
     @Autowired
-    private final TasksRepository tasksRepository;
+    private final TaskRepository tasksRepository;
     private Tasks tasks;
     private TasksDTO dto;
     private List<Tasks> tasksList;
@@ -92,6 +95,32 @@ public class TasksServiceImpl implements TasksService {
             tasksDTOList.add(dto);
         }
         return tasksDTOList;
+    }
+
+    @Override
+    public Page<TasksDTO> getAllTask(PageRequest pageRequest, String name, String description, String status, LocalDate creation_date, LocalDate due_date, String priority) {
+        Specification<Tasks> specification = Specification.where(null);
+        if (name != null) {
+            specification = specification.and((root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("name"), name));
+        }
+        if (description != null) {
+            specification = specification.and((root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("description"), description));
+        }
+        if (status != null) {
+            specification = specification.and((root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("status"), status));
+        }
+        if (creation_date != null) {
+            specification = specification.and((root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("creation_date"), creation_date));
+        }
+        if (due_date != null) {
+            specification = specification.and((root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("due_date"), due_date));
+        }
+        if (priority != null) {
+            specification = specification.and((root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("priority"), priority));
+        }
+
+        Page<Tasks> tasksPage = tasksRepository.findAll(specification,pageRequest);
+        return tasksPage.map(this::convertToDTO);
     }
 
     @Override

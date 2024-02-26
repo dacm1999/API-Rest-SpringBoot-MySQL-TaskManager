@@ -6,10 +6,13 @@ import com.dacm.taskManager.exception.CommonErrorResponse;
 import com.dacm.taskManager.model.AddModel;
 import com.dacm.taskManager.model.PrioritiesErrorModel;
 import com.dacm.taskManager.model.TagsErrorModel;
-import com.dacm.taskManager.repository.PrioritiesRepository;
+import com.dacm.taskManager.repository.PriorityRepository;
+import com.dacm.taskManager.responses.PrioritiesPaginationResponse;
 import com.dacm.taskManager.service.implementService.PrioritiesServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -27,7 +30,7 @@ public class PrioritiesRestController {
     @Autowired
     private final PrioritiesServiceImpl prioritiesService;
     @Autowired
-    private final PrioritiesRepository prioritiesRepository;
+    private final PriorityRepository prioritiesRepository;
     private PrioritiesDTO prioritiesDTO;
     private List<PrioritiesDTO> prioritiesDTOList;
 
@@ -57,9 +60,26 @@ public class PrioritiesRestController {
 
     @GetMapping(value = "/all")
     @PreAuthorize("hasAnyRole('ADMIN','USER')")
-    public ResponseEntity<List<PrioritiesDTO>> getAll() {
-        prioritiesDTOList = prioritiesService.getAllPrioritiesDTO();
-        return ResponseEntity.ok(prioritiesDTOList);
+    public ResponseEntity<PrioritiesPaginationResponse> getAll(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "15") int size,
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) int value
+    ) {
+        Page<PrioritiesDTO> prioritiesPage = prioritiesService.getAllUsersDTO(
+                PageRequest.of(page,size),
+                name,
+                value
+        );
+
+        PrioritiesPaginationResponse response = new PrioritiesPaginationResponse();
+        response.setPriorities(prioritiesPage.getContent());
+        response.setTotalPages(prioritiesPage.getTotalPages());
+        response.setTotalElements(prioritiesPage.getTotalElements());
+        response.setNumberOfElements(prioritiesPage.getNumberOfElements());
+        response.setSize(prioritiesPage.getSize());
+
+        return ResponseEntity.ok(response);
     }
 
     @PutMapping(value = "/{id}")

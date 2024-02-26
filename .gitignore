@@ -12,7 +12,7 @@
 .idea/**/usage.statistics.xml
 .idea/**/dictionaries
 .idea/**/shelf
-
+ 
 # AWS User-specific
 .idea/**/aws.xml
 
@@ -342,5 +342,6 @@ gradle-app.setting
 # Ignore 
 00-spring-boot-3-spring-6-hibernate-full-course/
 00-spring-boot-3-full-course
+02_fronted_android/
 
 # End of https://www.toptal.com/developers/gitignore/api/java,intellij,visualstudiocode,eclipse,macos,windows,linux,maven,gradle

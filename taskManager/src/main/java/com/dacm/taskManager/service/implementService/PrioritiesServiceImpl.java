@@ -1,10 +1,15 @@
 package com.dacm.taskManager.service.implementService;
 
 import com.dacm.taskManager.dto.PrioritiesDTO;
+import com.dacm.taskManager.dto.UserDTO;
 import com.dacm.taskManager.entity.Priorities;
-import com.dacm.taskManager.repository.PrioritiesRepository;
+import com.dacm.taskManager.entity.User;
+import com.dacm.taskManager.repository.PriorityRepository;
 import com.dacm.taskManager.service.PrioritiesService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -15,7 +20,7 @@ import java.util.NoSuchElementException;
 @RequiredArgsConstructor
 public class PrioritiesServiceImpl implements PrioritiesService {
 
-    private final PrioritiesRepository prioritiesRepository;
+    private final PriorityRepository prioritiesRepository;
     @Override
     public PrioritiesDTO convertoToDTO(Priorities priorities) {
         PrioritiesDTO prioritiesDTO = new PrioritiesDTO();
@@ -62,6 +67,21 @@ public class PrioritiesServiceImpl implements PrioritiesService {
         }
 
         return prioritiesDTOS;
+    }
+
+    @Override
+    public Page<PrioritiesDTO> getAllUsersDTO(PageRequest pageRequest, String name, int value) {
+        Specification<Priorities> specification = Specification.where(null);
+        if (name != null) {
+            specification = specification.and((root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("name"), name));
+        }
+        if (value != 0) {
+            specification = specification.and((root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("value"), value));
+        }
+
+        Page<Priorities> prioritiesPage = prioritiesRepository.findAll(specification,pageRequest);
+
+        return prioritiesPage.map(this::convertoToDTO);
     }
 
     @Override

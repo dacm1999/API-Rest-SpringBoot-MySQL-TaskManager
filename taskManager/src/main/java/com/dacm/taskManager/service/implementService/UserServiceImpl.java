@@ -1,10 +1,13 @@
 package com.dacm.taskManager.service.implementService;
 
-import com.dacm.taskManager.repository.UserRepository;
+import com.dacm.taskManager.repository.UsersRepository;
 import com.dacm.taskManager.entity.User;
 import com.dacm.taskManager.service.UserService;
 import com.dacm.taskManager.dto.UserDTO;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -15,7 +18,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
-    private final UserRepository userRepository;
+    private final UsersRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
 
@@ -33,7 +36,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDTO getUser(String username) {
         User user = userRepository.findFirstByUsername(username);
-        if(user != null){
+        if (user != null) {
             UserDTO userDTO = UserDTO.builder()
                     .username(user.username)
                     .firstname(user.firstname)
@@ -91,16 +94,23 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UserDTO> getAllUsersDTO() {
-        List<User> usersList = userRepository.findAll();
-        List<UserDTO> userDTOList = new ArrayList<>();
-
-        for (User users : usersList) {
-            UserDTO userDTO = convertToDTO(users);
-            userDTOList.add(userDTO);
+    public Page<UserDTO> getAllUsersDTO(PageRequest pageRequest, String username, String firstname, String lastname, String email) {
+        Specification<User> specification = Specification.where(null);
+        if (username != null) {
+            specification = specification.and((root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("username"), username));
+        }
+        if (firstname != null) {
+            specification = specification.and((root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("firstname"), firstname));
+        }
+        if (lastname != null) {
+            specification = specification.and((root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("lastname"), lastname));
+        }
+        if (email != null) {
+            specification = specification.and((root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("email"), email));
         }
 
-        return userDTOList;
+        Page<User> userPage = userRepository.findAll(specification, pageRequest);
+        return userPage.map(this::convertToDTO);
     }
 
     @Override
@@ -118,7 +128,8 @@ public class UserServiceImpl implements UserService {
         List<String> emails = users.stream()
                 .map(User::getEmail)
                 .collect(Collectors.toList());
-        return emails;    }
+        return emails;
+    }
 
     @Override
     public int save(User users) {

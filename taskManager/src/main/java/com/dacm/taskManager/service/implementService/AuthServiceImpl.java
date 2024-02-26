@@ -5,7 +5,7 @@ import com.dacm.taskManager.responses.LoginRequest;
 import com.dacm.taskManager.responses.RegisterRequest;
 import com.dacm.taskManager.entity.User;
 import com.dacm.taskManager.enums.Role;
-import com.dacm.taskManager.repository.UserRepository;
+import com.dacm.taskManager.repository.UsersRepository;
 import com.dacm.taskManager.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -17,7 +17,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
 
-    private final UserRepository userRepository;
+    private final UsersRepository userRepository;
     private final JwtServiceImpl jwtService;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;

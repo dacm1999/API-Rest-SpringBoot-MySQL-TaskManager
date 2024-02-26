@@ -5,6 +5,9 @@ import com.dacm.taskManager.entity.Tags;
 import com.dacm.taskManager.repository.TagRepository;
 import com.dacm.taskManager.service.TagService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -91,6 +94,21 @@ public class TagServiceImpl implements TagService {
             tagsDAOList.add(tagsDAO);
         }
         return  tagsDAOList;
+    }
+
+    @Override
+    public Page<TagsDTO> getAllTagsDTOPage(PageRequest pageRequest, String name, String description) {
+        Specification<Tags> specification = Specification.where(null);
+
+        if(name != null){
+            specification = specification.and((root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("name"),name));
+        }
+        if(name != null){
+            specification = specification.and((root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("description"),description));
+        }
+
+        Page<Tags> tagsPage = tagRepository.findAll(specification, pageRequest);
+        return tagsPage.map(this::convertToDTO);
     }
 
     @Override

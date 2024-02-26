@@ -4,17 +4,20 @@ import com.dacm.taskManager.dto.TasksDTO;
 import com.dacm.taskManager.entity.Tasks;
 import com.dacm.taskManager.exception.CommonErrorResponse;
 import com.dacm.taskManager.model.AddModel;
-import com.dacm.taskManager.model.TagsErrorModel;
 import com.dacm.taskManager.model.TasksErrorModel;
-import com.dacm.taskManager.repository.TasksRepository;
+import com.dacm.taskManager.repository.TaskRepository;
+import com.dacm.taskManager.responses.TasksPaginationResponse;
 import com.dacm.taskManager.service.implementService.TasksServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -25,7 +28,7 @@ import java.util.NoSuchElementException;
 public class TasksRestController {
 
     @Autowired
-    private final TasksRepository tasksRepository;
+    private final TaskRepository tasksRepository;
 
     @Autowired
     private final TasksServiceImpl tasksService;
@@ -47,9 +50,36 @@ public class TasksRestController {
 
     @GetMapping(value = "/all")
     @PreAuthorize("hasAnyRole('ADMIN','USER')")
-    public ResponseEntity<List<TasksDTO>> getAllTasks(){
-        tasksDTOList = tasksService.getAllTasks();
-        return ResponseEntity.ok(tasksDTOList);
+    public ResponseEntity<TasksPaginationResponse> showAllTasks(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) String description,
+            @RequestParam(required = false) String status,
+            @RequestParam(required = false)LocalDate creation_date,
+            @RequestParam(required = false) LocalDate due_date,
+            @RequestParam(required = false) String priority
+            ){
+
+        Page<TasksDTO> tasksDTOPage = tasksService.getAllTask(
+                PageRequest.of(page,size),
+                name,
+                description,
+                status,
+                creation_date,
+                due_date,
+                priority
+        );
+
+        TasksPaginationResponse response = new TasksPaginationResponse();
+        response.setTasks(tasksDTOPage.getContent());
+        response.setTotalPages(tasksDTOPage.getTotalPages());
+        response.setTotalElements(tasksDTOPage.getTotalElements());
+        response.setNumber(tasksDTOPage.getNumber());
+        response.setNumberOfElements(tasksDTOPage.getNumberOfElements());
+        response.setSize(tasksDTOPage.getSize());
+
+        return ResponseEntity.ok(response);
     }
 
     @PutMapping(value = "/{id}")

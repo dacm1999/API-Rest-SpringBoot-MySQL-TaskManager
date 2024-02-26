@@ -5,10 +5,13 @@ import com.dacm.taskManager.exception.CommonErrorResponse;
 import com.dacm.taskManager.model.AddModel;
 import com.dacm.taskManager.model.TagsErrorModel;
 import com.dacm.taskManager.repository.TagRepository;
+import com.dacm.taskManager.responses.TagsPaginationResponse;
 import com.dacm.taskManager.service.implementService.TagServiceImpl;
 import com.dacm.taskManager.dto.TagsDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -55,9 +58,25 @@ public class TagsRestController {
 
     @GetMapping(value = "/allTags")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<List<TagsDTO>> showAllTags() {
-        List<TagsDTO> tagsDAOList = tagService.getAllTagsDTO();
-        return ResponseEntity.ok(tagsDAOList);
+    public ResponseEntity<TagsPaginationResponse> showAllTags(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "15") int size,
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) String description
+    ) {
+        Page<TagsDTO> tagsDTOPage = tagService.getAllTagsDTOPage(
+                PageRequest.of(page, size),
+                name,
+                description
+        );
+
+        TagsPaginationResponse response = new TagsPaginationResponse();
+        response.setTags(tagsDTOPage.getContent());
+        response.setTotalElements(tagsDTOPage.getTotalElements());
+        response.setTotalPages(tagsDTOPage.getTotalPages());
+        response.setNumberOfElements(tagsDTOPage.getNumberOfElements());
+        response.setSize(tagsDTOPage.getSize());
+        return ResponseEntity.ok(response);
     }
 
     @PutMapping(value = "/{id}")

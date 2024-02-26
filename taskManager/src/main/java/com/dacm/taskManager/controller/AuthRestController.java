@@ -5,7 +5,7 @@ import com.dacm.taskManager.responses.AuthResponse;
 import com.dacm.taskManager.responses.LoginRequest;
 import com.dacm.taskManager.service.implementService.AuthServiceImpl;
 import com.dacm.taskManager.exception.AuthErrorResponse;
-import com.dacm.taskManager.repository.UserRepository;
+import com.dacm.taskManager.repository.UsersRepository;
 import io.micrometer.common.util.StringUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.*;
 public class AuthRestController {
 
     private final AuthServiceImpl authService;
-    private final UserRepository userRepository;
+    private final UsersRepository userRepository;
 
     @PostMapping(value = "/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest request) {
