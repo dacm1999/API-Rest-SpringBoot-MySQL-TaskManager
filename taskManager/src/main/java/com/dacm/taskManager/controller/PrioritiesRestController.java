@@ -3,9 +3,9 @@ package com.dacm.taskManager.controller;
 import com.dacm.taskManager.dto.PrioritiesDTO;
 import com.dacm.taskManager.entity.Priorities;
 import com.dacm.taskManager.exception.CommonErrorResponse;
-import com.dacm.taskManager.model.AddModel;
-import com.dacm.taskManager.model.PrioritiesErrorModel;
-import com.dacm.taskManager.model.TagsErrorModel;
+import com.dacm.taskManager.responses.AddedResponse;
+import com.dacm.taskManager.responses.PrioritiesErrorResponse;
+import com.dacm.taskManager.responses.TagsErrorResponse;
 import com.dacm.taskManager.repository.PriorityRepository;
 import com.dacm.taskManager.responses.PrioritiesPaginationResponse;
 import com.dacm.taskManager.service.implementService.PrioritiesServiceImpl;
@@ -111,12 +111,12 @@ public class PrioritiesRestController {
     public ResponseEntity<?> addSingle(@RequestBody Priorities priorities) {
 
         prioritiesDTOList = prioritiesService.getAllPrioritiesDTO();
-        List<PrioritiesErrorModel> failed = new ArrayList<>();
+        List<PrioritiesErrorResponse> failed = new ArrayList<>();
         boolean repeatName = false;
 
         for(PrioritiesDTO tempDTO : prioritiesDTOList){
             if(priorities.getName().equals(tempDTO.getName())){
-                PrioritiesErrorModel errorModel = new PrioritiesErrorModel(prioritiesDTO.getName(), "COULD NOT ADD BECAUSE PRIORITY NAME IS DUPLICATED");
+                PrioritiesErrorResponse errorModel = new PrioritiesErrorResponse(prioritiesDTO.getName(), "COULD NOT ADD BECAUSE PRIORITY NAME IS DUPLICATED");
                 repeatName = true;
                 failed.add(errorModel);
 
@@ -134,21 +134,21 @@ public class PrioritiesRestController {
 
     @PostMapping(value = "/")
     @PreAuthorize("hasAnyRole('ADMIN','USER')")
-    public ResponseEntity<AddModel> addManyPriorities(@RequestBody Priorities[] priorities) {
+    public ResponseEntity<AddedResponse> addManyPriorities(@RequestBody Priorities[] priorities) {
         prioritiesDTOList = prioritiesService.getAllPrioritiesDTO();
-        AddModel result;
+        AddedResponse result;
         String reason = "";
         int total = priorities.length;
         int count_added = 0;
         int count_failed = 0;
         List<Priorities> added = new ArrayList<>();
-        List<TagsErrorModel> failed = new ArrayList<>();
+        List<TagsErrorResponse> failed = new ArrayList<>();
 
         for (Priorities tempPriorities : priorities) {
             boolean repeatName = false;
             for (PrioritiesDTO dto : prioritiesDTOList) {
                 if (tempPriorities.getName().equals(dto.getName())) {
-                    TagsErrorModel errorModel = new TagsErrorModel(tempPriorities.getName(), "DUPLICATED VALUE");
+                    TagsErrorResponse errorModel = new TagsErrorResponse(tempPriorities.getName(), "DUPLICATED VALUE");
                     failed.add(errorModel);
                     count_failed++;
                     repeatName = true;
@@ -164,7 +164,7 @@ public class PrioritiesRestController {
                 count_added++;
             }
         }
-        result = new AddModel(true, total, count_added, count_failed, (ArrayList<Priorities>) added, (ArrayList<TagsErrorModel>) failed, reason);
+        result = new AddedResponse(true, total, count_added, count_failed, (ArrayList<Priorities>) added, (ArrayList<TagsErrorResponse>) failed, reason);
         return ResponseEntity.ok(result);
     }
 

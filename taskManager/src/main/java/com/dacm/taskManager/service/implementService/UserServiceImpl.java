@@ -1,6 +1,6 @@
 package com.dacm.taskManager.service.implementService;
 
-import com.dacm.taskManager.repository.UsersRepository;
+import com.dacm.taskManager.repository.UserRepository;
 import com.dacm.taskManager.entity.User;
 import com.dacm.taskManager.service.UserService;
 import com.dacm.taskManager.dto.UserDTO;
@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
-    private final UsersRepository userRepository;
+    private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
 

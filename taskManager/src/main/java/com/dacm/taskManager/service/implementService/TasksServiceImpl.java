@@ -6,6 +6,7 @@ import com.dacm.taskManager.entity.User;
 import com.dacm.taskManager.enums.Status;
 import com.dacm.taskManager.exception.CommonErrorResponse;
 import com.dacm.taskManager.repository.TaskRepository;
+import com.dacm.taskManager.responses.TasksByUsernameResponse;
 import com.dacm.taskManager.service.TasksService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,23 +67,29 @@ public class TasksServiceImpl implements TasksService {
     }
 
     @Override
-    public TasksDTO geyByUserId(int user_id) {
+    public List<TasksDTO> getByUserId(int user_id) {
+        List<TasksDTO> tasksDTOList = new ArrayList<>();
+
         // Buscar tareas por user_id
-        tasks = (Tasks) tasksRepository.findByUserId(user_id);
+        List<Tasks> tasksList = tasksRepository.findByUserId(user_id);
 
         // Verificar si se encontraron tareas
-        if (tasks != null) {
-            dto = new TasksDTO();
-            dto.setName(tasks.getName());
-            dto.setDescription(tasks.getDescription());
-            dto.setStatus(String.valueOf(tasks.getStatus()));
-            dto.setCreation_date(tasks.getCreation_date());
-            dto.setDue_date(tasks.getDue_date());
-            dto.setPriority(String.valueOf(tasks.getPriority_id()));
-            return dto;
+        if (!tasksList.isEmpty()) {
+            for (Tasks tasks : tasksList) {
+                TasksDTO dto = new TasksDTO();
+                dto.setName(tasks.getName());
+                dto.setDescription(tasks.getDescription());
+                dto.setStatus(String.valueOf(tasks.getStatus()));
+                dto.setCreation_date(tasks.getCreation_date());
+                dto.setDue_date(tasks.getDue_date());
+                dto.setPriority(String.valueOf(tasks.getPriority_id()));
+                tasksDTOList.add(dto);
+            }
         } else {
-            throw new CommonErrorResponse("COULD NOT FOUND TASKS WITH USER ID: " + user_id);
+            throw new CommonErrorResponse("COULD NOT FIND TASKS WITH USER ID: " + user_id);
         }
+
+        return tasksDTOList;
     }
 
     @Override

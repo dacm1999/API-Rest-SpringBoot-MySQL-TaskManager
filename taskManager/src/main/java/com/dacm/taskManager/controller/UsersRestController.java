@@ -2,8 +2,8 @@ package com.dacm.taskManager.controller;
 
 import com.dacm.taskManager.exception.CommonErrorResponse;
 import com.dacm.taskManager.entity.User;
-import com.dacm.taskManager.model.AddModel;
-import com.dacm.taskManager.model.UserErrorModel;
+import com.dacm.taskManager.responses.AddedResponse;
+import com.dacm.taskManager.responses.UserErrorResponse;
 import com.dacm.taskManager.enums.Role;
 import com.dacm.taskManager.dto.UserDTO;
 import com.dacm.taskManager.responses.UserPaginationResponse;
@@ -15,7 +15,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.orm.hibernate5.HibernateQueryException;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -105,12 +104,12 @@ public class UsersRestController {
     }
 
     @PostMapping("/")
-    public ResponseEntity<AddModel> addManyUsers(@RequestBody User[] users) {
-        AddModel result = null;
+    public ResponseEntity<AddedResponse> addManyUsers(@RequestBody User[] users) {
+        AddedResponse result = null;
 
         try {
             List<UserDTO> addedUsers = new ArrayList<>();
-            List<UserErrorModel> usersFail = new ArrayList<>();
+            List<UserErrorResponse> usersFail = new ArrayList<>();
             String reason = "";
             String errorDescription = "";
 
@@ -133,7 +132,7 @@ public class UsersRestController {
                 // Verificar si el nombre de usuario ya existe
                 if (existingUsernames.contains(username)) {
                     // Agregar el usuario al listado de usuarios fallidos
-                    usersFail.add(new UserErrorModel(username, email, errorDescription));
+                    usersFail.add(new UserErrorResponse(username, email, errorDescription));
                     continue; // Pasar al siguiente usuario
                 }
 
@@ -141,7 +140,7 @@ public class UsersRestController {
                 if (existingEmails.contains(email)) {
                     // Agregar el usuario al listado de usuarios fallidos
                     errorDescription = "Email duplicated";
-                    usersFail.add(new UserErrorModel(username, email, errorDescription));
+                    usersFail.add(new UserErrorResponse(username, email, errorDescription));
                     continue; // Pasar al siguiente usuario
                 }
 
@@ -179,7 +178,7 @@ public class UsersRestController {
 
             // Calcular el éxito de la operación y crear el modelo de respuesta
             boolean success = num_added > 0;
-            result = new AddModel(success, total, num_added, num_failed, (ArrayList) addedUsers, (ArrayList) usersFail, reason);
+            result = new AddedResponse(success, total, num_added, num_failed, (ArrayList) addedUsers, (ArrayList) usersFail, reason);
 
         } catch (HibernateQueryException e) {
             throw new CommonErrorResponse("Duplicated values", e);

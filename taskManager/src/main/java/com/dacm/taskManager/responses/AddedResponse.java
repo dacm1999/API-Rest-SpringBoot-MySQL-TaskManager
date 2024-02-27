@@ -1,4 +1,4 @@
-package com.dacm.taskManager.model;
+package com.dacm.taskManager.responses;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -7,7 +7,7 @@ import java.util.ArrayList;
 
 @Getter
 @Setter
-public class AddModel {
+public class AddedResponse {
     private boolean success;
     private int total;
     private int num_added;
@@ -17,7 +17,7 @@ public class AddModel {
     private String reason;
 
 
-    public AddModel(boolean success, int total, int num_added, int num_failed, ArrayList added, ArrayList failed, String reason) {
+    public AddedResponse(boolean success, int total, int num_added, int num_failed, ArrayList added, ArrayList failed, String reason) {
         this.success = success;
         this.total = total;
         this.num_added = num_added;

@@ -2,8 +2,8 @@ package com.dacm.taskManager.controller;
 
 import com.dacm.taskManager.entity.Tags;
 import com.dacm.taskManager.exception.CommonErrorResponse;
-import com.dacm.taskManager.model.AddModel;
-import com.dacm.taskManager.model.TagsErrorModel;
+import com.dacm.taskManager.responses.AddedResponse;
+import com.dacm.taskManager.responses.TagsErrorResponse;
 import com.dacm.taskManager.repository.TagRepository;
 import com.dacm.taskManager.responses.TagsPaginationResponse;
 import com.dacm.taskManager.service.implementService.TagServiceImpl;
@@ -115,7 +115,7 @@ public class TagsRestController {
 
         // Get all existing tags DTOs and initialize a list to store failed operations
         List<TagsDTO> tagsDTOList = tagService.getAllTagsDTO();
-        List<TagsErrorModel> failed = new ArrayList<>();
+        List<TagsErrorResponse> failed = new ArrayList<>();
 
         boolean repeatCode = false; // Move this declaration out of the for loop
 
@@ -124,7 +124,7 @@ public class TagsRestController {
             // Check if the tag name already exists
             if (tags.getName().equals(tempTagDTO.getName())) {
                 // If duplicate found, create an error model and add it to the list of failed operations
-                TagsErrorModel errorModel = new TagsErrorModel(tags.getName(), "COULD NOT ADD BECAUSE TAG NAME IS DUPLICATED");
+                TagsErrorResponse errorModel = new TagsErrorResponse(tags.getName(), "COULD NOT ADD BECAUSE TAG NAME IS DUPLICATED");
                 repeatCode = true;
                 failed.add(errorModel);
                 return ResponseEntity.ok(failed); // Return the list of failed operations as response
@@ -146,21 +146,21 @@ public class TagsRestController {
 
     @PostMapping(value = "/")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<AddModel> addManyTags(@RequestBody Tags[] tags) {
+    public ResponseEntity<AddedResponse> addManyTags(@RequestBody Tags[] tags) {
         List<TagsDTO> tagsDTOList = tagService.getAllTagsDTO();
-        AddModel result;
+        AddedResponse result;
         String reason = "";
         int total = tags.length;
         int count_added = 0;
         int count_failed = 0;
-        List<TagsErrorModel> failed = new ArrayList<>();
+        List<TagsErrorResponse> failed = new ArrayList<>();
         List<Tags> addedTags = new ArrayList<>();
 
         for (Tags tag : tags) {
             boolean repeatCode = false;
             for (TagsDTO tagsDTO : tagsDTOList) {
                 if (tag.getName().equals(tagsDTO.getName())) {
-                    TagsErrorModel errorModel = new TagsErrorModel(
+                    TagsErrorResponse errorModel = new TagsErrorResponse(
                             tag.getName()
                             , "TAG NAME REPEATED");
                     failed.add(errorModel);
@@ -180,7 +180,7 @@ public class TagsRestController {
             }
         }
 
-        result = new AddModel(true, total, count_added, count_failed, (ArrayList) addedTags, (ArrayList) failed, reason);
+        result = new AddedResponse(true, total, count_added, count_failed, (ArrayList) addedTags, (ArrayList) failed, reason);
         return ResponseEntity.ok(result);
     }
 
