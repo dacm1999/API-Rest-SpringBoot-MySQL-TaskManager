@@ -8,7 +8,7 @@ import com.dacm.taskManager.responses.PrioritiesErrorResponse;
 import com.dacm.taskManager.responses.TagsErrorResponse;
 import com.dacm.taskManager.repository.PriorityRepository;
 import com.dacm.taskManager.responses.PrioritiesPaginationResponse;
-import com.dacm.taskManager.service.implementService.PrioritiesServiceImpl;
+import com.dacm.taskManager.service.implementedService.PrioritiesServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;

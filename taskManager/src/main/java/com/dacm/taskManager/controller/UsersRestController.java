@@ -7,7 +7,7 @@ import com.dacm.taskManager.responses.UserErrorResponse;
 import com.dacm.taskManager.enums.Role;
 import com.dacm.taskManager.dto.UserDTO;
 import com.dacm.taskManager.responses.UserPaginationResponse;
-import com.dacm.taskManager.service.implementService.UserServiceImpl;
+import com.dacm.taskManager.service.implementedService.UserServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;

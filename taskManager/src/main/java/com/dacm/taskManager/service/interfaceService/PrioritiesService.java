@@ -1,7 +1,6 @@
-package com.dacm.taskManager.service;
+package com.dacm.taskManager.service.interfaceService;
 
 import com.dacm.taskManager.dto.PrioritiesDTO;
-import com.dacm.taskManager.dto.UserDTO;
 import com.dacm.taskManager.entity.Priorities;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;

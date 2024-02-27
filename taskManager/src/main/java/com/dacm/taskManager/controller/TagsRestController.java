@@ -6,7 +6,7 @@ import com.dacm.taskManager.responses.AddedResponse;
 import com.dacm.taskManager.responses.TagsErrorResponse;
 import com.dacm.taskManager.repository.TagRepository;
 import com.dacm.taskManager.responses.TagsPaginationResponse;
-import com.dacm.taskManager.service.implementService.TagServiceImpl;
+import com.dacm.taskManager.service.implementedService.TagServiceImpl;
 import com.dacm.taskManager.dto.TagsDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;

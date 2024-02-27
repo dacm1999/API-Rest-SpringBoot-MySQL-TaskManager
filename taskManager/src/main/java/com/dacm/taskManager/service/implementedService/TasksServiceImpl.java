@@ -1,13 +1,11 @@
-package com.dacm.taskManager.service.implementService;
+package com.dacm.taskManager.service.implementedService;
 
 import com.dacm.taskManager.dto.TasksDTO;
 import com.dacm.taskManager.entity.Tasks;
-import com.dacm.taskManager.entity.User;
 import com.dacm.taskManager.enums.Status;
 import com.dacm.taskManager.exception.CommonErrorResponse;
 import com.dacm.taskManager.repository.TaskRepository;
-import com.dacm.taskManager.responses.TasksByUsernameResponse;
-import com.dacm.taskManager.service.TasksService;
+import com.dacm.taskManager.service.interfaceService.TasksService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;

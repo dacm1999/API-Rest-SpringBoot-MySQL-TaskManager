@@ -1,11 +1,9 @@
-package com.dacm.taskManager.service.implementService;
+package com.dacm.taskManager.service.implementedService;
 
 import com.dacm.taskManager.dto.PrioritiesDTO;
-import com.dacm.taskManager.dto.UserDTO;
 import com.dacm.taskManager.entity.Priorities;
-import com.dacm.taskManager.entity.User;
 import com.dacm.taskManager.repository.PriorityRepository;
-import com.dacm.taskManager.service.PrioritiesService;
+import com.dacm.taskManager.service.interfaceService.PrioritiesService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;

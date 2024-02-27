@@ -1,9 +1,9 @@
-package com.dacm.taskManager.service.implementService;
+package com.dacm.taskManager.service.implementedService;
 
 import com.dacm.taskManager.dto.TagsDTO;
 import com.dacm.taskManager.entity.Tags;
 import com.dacm.taskManager.repository.TagRepository;
-import com.dacm.taskManager.service.TagService;
+import com.dacm.taskManager.service.interfaceService.TagService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;

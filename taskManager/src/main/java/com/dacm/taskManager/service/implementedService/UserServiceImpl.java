@@ -1,8 +1,8 @@
-package com.dacm.taskManager.service.implementService;
+package com.dacm.taskManager.service.implementedService;
 
 import com.dacm.taskManager.repository.UserRepository;
 import com.dacm.taskManager.entity.User;
-import com.dacm.taskManager.service.UserService;
+import com.dacm.taskManager.service.interfaceService.UserService;
 import com.dacm.taskManager.dto.UserDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;

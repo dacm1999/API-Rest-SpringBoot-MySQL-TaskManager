@@ -1,4 +1,4 @@
-package com.dacm.taskManager.service;
+package com.dacm.taskManager.service.interfaceService;
 
 import com.dacm.taskManager.dto.TasksDTO;
 import com.dacm.taskManager.entity.Tasks;

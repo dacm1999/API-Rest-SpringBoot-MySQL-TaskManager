@@ -1,4 +1,4 @@
-package com.dacm.taskManager.service;
+package com.dacm.taskManager.service.interfaceService;
 
 import com.dacm.taskManager.responses.AuthResponse;
 import com.dacm.taskManager.responses.LoginRequest;

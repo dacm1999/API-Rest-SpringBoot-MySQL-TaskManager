@@ -1,11 +1,9 @@
-package com.dacm.taskManager.service;
+package com.dacm.taskManager.service.interfaceService;
 
 import com.dacm.taskManager.entity.Tags;
 import com.dacm.taskManager.dto.TagsDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 

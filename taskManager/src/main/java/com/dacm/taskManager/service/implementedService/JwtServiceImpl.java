@@ -1,8 +1,8 @@
-package com.dacm.taskManager.service.implementService;
+package com.dacm.taskManager.service.implementedService;
 
 import com.dacm.taskManager.entity.User;
 import com.dacm.taskManager.exception.CommonErrorResponse;
-import com.dacm.taskManager.service.JwtService;
+import com.dacm.taskManager.service.interfaceService.JwtService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
