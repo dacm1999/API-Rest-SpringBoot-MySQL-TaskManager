@@ -8,7 +8,7 @@ import java.util.List;
 
 @Getter
 @Setter
-public class TasksByUsernameResponse {
+public class TasksByUsernameResponse <T> {
 
     private String username;
     private int totalTasks;
@@ -16,12 +16,13 @@ public class TasksByUsernameResponse {
     private int totalPendingTasks;
     private List<TasksDTO> completedTasks;
     private List<TasksDTO> pendingTasks;
+    private List<TasksDTO> tasks;
 
     private long totalElements;
     private int totalPages;
     private int numberOfElements;
     private int size;
-    private int number;
+    private int page;
 
     public TasksByUsernameResponse() {
     }
@@ -34,4 +35,5 @@ public class TasksByUsernameResponse {
         this.completedTasks = completedTasks;
         this.pendingTasks = pendientingTasks;
     }
+
 }

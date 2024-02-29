@@ -5,11 +5,13 @@ import com.dacm.taskManager.entity.Tasks;
 import com.dacm.taskManager.enums.Status;
 import com.dacm.taskManager.exception.CommonErrorResponse;
 import com.dacm.taskManager.repository.TaskRepository;
+import com.dacm.taskManager.responses.TasksByUsernameResponse;
 import com.dacm.taskManager.service.interfaceService.TasksService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
@@ -41,11 +43,6 @@ public class TasksServiceImpl implements TasksService {
         dto.setDue_date(tasks.getDue_date());
         dto.setPriority(String.valueOf(tasks.getPriority_id()));
         return dto;
-    }
-
-    private String formatDate(LocalDate date) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
-        return date.format(formatter);
     }
 
     @Override

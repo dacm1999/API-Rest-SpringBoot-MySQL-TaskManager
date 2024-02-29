@@ -17,6 +17,6 @@ public class TasksPaginationResponse {
     private int totalPages;
     private int numberOfElements;
     private int size;
-    private int number;
+    private int page;
 
 }

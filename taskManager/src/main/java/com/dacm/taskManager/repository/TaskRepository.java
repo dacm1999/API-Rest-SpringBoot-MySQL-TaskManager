@@ -13,17 +13,10 @@ import java.util.List;
 @Repository
 public interface TaskRepository extends JpaRepository<Tasks, Integer> {
 
-//    @Query("SELECT users.firstname, users.lastname, users.username, tasks.name, tasks.description, tasks.status, priorities.name, tasks.creation_date, tasks.due_date) " +
-//            "FROM User users " +
-//            "INNER JOIN Tasks tasks ON users.userId = tasks.user_id " +
-//            "INNER JOIN Priorities priorities ON priorities.id = tasks.priority_id " +
-//            "WHERE users.username = :username")
-//    List<TasksDTO> findTasksWithDetailsByUsername(@Param("username") String username);
 
     Page<Tasks> findAll(Specification<Tasks> specification, Pageable pageable);
 
     @Query("SELECT t FROM Tasks t WHERE t.user_id = ?1")
     List<Tasks> findByUserId(int userId);
-
 
 }

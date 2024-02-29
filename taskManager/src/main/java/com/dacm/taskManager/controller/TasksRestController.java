@@ -66,7 +66,7 @@ public class TasksRestController {
             @RequestParam(required = false) String priority
     ) {
 
-        Page<TasksDTO> tasksDTOPage = tasksService.getAllTask(
+        Page<TasksDTO> result = tasksService.getAllTask(
                 PageRequest.of(page, size),
                 name,
                 description,
@@ -77,12 +77,12 @@ public class TasksRestController {
         );
 
         TasksPaginationResponse response = new TasksPaginationResponse();
-        response.setTasks(tasksDTOPage.getContent());
-        response.setTotalPages(tasksDTOPage.getTotalPages());
-        response.setTotalElements(tasksDTOPage.getTotalElements());
-        response.setNumber(tasksDTOPage.getNumber());
-        response.setNumberOfElements(tasksDTOPage.getNumberOfElements());
-        response.setSize(tasksDTOPage.getSize());
+        response.setTasks(result.getContent());
+        response.setTotalPages(result.getTotalPages());
+        response.setTotalElements(result.getTotalElements());
+        response.setPage(result.getNumber());
+        response.setNumberOfElements(result.getNumberOfElements());
+        response.setSize(result.getSize());
 
         return ResponseEntity.ok(response);
     }
@@ -100,8 +100,6 @@ public class TasksRestController {
                                                                        @RequestParam(required = false) LocalDate due_date,
                                                                        @RequestParam(required = false) String priority) {
 
-        TasksByUsernameResponse result;
-
 
         Optional<User> user = userRepository.findByUsername(username);
         int totalTasks = 0;
@@ -110,6 +108,15 @@ public class TasksRestController {
         List<TasksDTO> completedTasks = new ArrayList<>();
         List<TasksDTO> pendientingTasks = new ArrayList<>();
 
+        Page<TasksDTO> result = tasksService.getAllTask(
+                PageRequest.of(page, size),
+                name,
+                description,
+                status,
+                creation_date,
+                due_date,
+                priority
+        );
 
         if (user == null) {
             throw new NoSuchElementException("User with username " + username + " not found");
@@ -131,9 +138,15 @@ public class TasksRestController {
             totalTasks++;
         }
 
-        result = new TasksByUsernameResponse(username, totalTasks, count_completed, count_pending, completedTasks, pendientingTasks);
+        TasksByUsernameResponse response = new TasksByUsernameResponse(username, totalTasks, count_completed, count_pending, completedTasks, pendientingTasks);
+        response.setTasks(result.getContent());
+        response.setTotalPages(result.getTotalPages());
+        response.setTotalElements(result.getTotalElements());
+        response.setPage(result.getNumber());
+        response.setNumberOfElements(result.getNumberOfElements());
+        response.setSize(result.getSize());
 
-        return ResponseEntity.ok(result);
+        return ResponseEntity.ok(response);
     }
 
 
