@@ -10,6 +10,7 @@ import com.dacm.taskManager.service.interfaceService.TasksService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -18,8 +19,11 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+
 
 @Service
 @RequiredArgsConstructor
@@ -123,6 +127,44 @@ public class TasksServiceImpl implements TasksService {
 
         Page<Tasks> tasksPage = tasksRepository.findAll(specification,pageRequest);
         return tasksPage.map(this::convertToDTO);
+    }
+
+    @Override
+    public Page<TasksDTO> getAllTasksByUserId(int userId, PageRequest pageRequest, String name, String description, String status, LocalDate creation_date, LocalDate due_date, String priority) {
+        List<TasksDTO> tasksDTOList = getByUserId(userId);
+
+        List<TasksDTO> filteredTasks = new ArrayList<>();
+        for (TasksDTO task : tasksDTOList) {
+            boolean matchesCriteria = true;
+            if (name != null && !task.getName().equals(name)) {
+                matchesCriteria = false;
+            }
+            if (description != null && !task.getDescription().equals(description)) {
+                matchesCriteria = false;
+            }
+            if (status != null && !task.getStatus().equals(status)) {
+                matchesCriteria = false;
+            }
+            if (creation_date != null && !task.getCreation_date().equals(creation_date)) {
+                matchesCriteria = false;
+            }
+            if (due_date != null && !task.getDue_date().equals(due_date)) {
+                matchesCriteria = false;
+            }
+            if (priority != null && !task.getPriority().equals(priority)) {
+                matchesCriteria = false;
+            }
+            if (matchesCriteria) {
+                filteredTasks.add(task);
+            }
+        }
+
+
+        int start = (int) pageRequest.getOffset();
+        int end = Math.min((start + pageRequest.getPageSize()), filteredTasks.size());
+        Page<TasksDTO> page = new PageImpl<>(filteredTasks.subList(start, end), pageRequest, filteredTasks.size());
+
+        return page;
     }
 
     @Override

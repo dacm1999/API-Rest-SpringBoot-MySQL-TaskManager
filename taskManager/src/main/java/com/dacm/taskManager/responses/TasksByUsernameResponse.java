@@ -8,7 +8,7 @@ import java.util.List;
 
 @Getter
 @Setter
-public class TasksByUsernameResponse <T> {
+public class TasksByUsernameResponse {
 
     private String username;
     private int totalTasks;
@@ -16,13 +16,12 @@ public class TasksByUsernameResponse <T> {
     private int totalPendingTasks;
     private List<TasksDTO> completedTasks;
     private List<TasksDTO> pendingTasks;
-    private List<TasksDTO> tasks;
 
-    private long totalElements;
-    private int totalPages;
     private int numberOfElements;
+    private long totalElements;
     private int size;
     private int page;
+    private int totalPages;
 
     public TasksByUsernameResponse() {
     }
@@ -36,4 +35,18 @@ public class TasksByUsernameResponse <T> {
         this.pendingTasks = pendientingTasks;
     }
 
+    public TasksByUsernameResponse(String username, int totalTasks, int totalCompletedTasks, int totalPendingTasks) {
+        this.username = username;
+        this.totalTasks = totalTasks;
+        this.totalCompletedTasks = totalCompletedTasks;
+        this.totalPendingTasks = totalPendingTasks;
+    }
+
+    public TasksByUsernameResponse(int numberOfElements, long totalElements, int size, int page, int totalPages) {
+        this.numberOfElements = numberOfElements;
+        this.totalElements = totalElements;
+        this.size = size;
+        this.page = page;
+        this.totalPages = totalPages;
+    }
 }

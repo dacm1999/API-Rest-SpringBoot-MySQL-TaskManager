@@ -17,6 +17,7 @@ public interface TasksService {
     List<TasksDTO> getByUserId(int id);
     List<TasksDTO> getAllTasks();
     Page<TasksDTO> getAllTask(PageRequest pageRequest, String name, String description, String status, LocalDate creation_date, LocalDate due_date, String priority);
+    Page<TasksDTO> getAllTasksByUserId(int userId, PageRequest pageRequest, String name, String description, String status, LocalDate creation_date, LocalDate due_date, String priority);
     TasksDTO updateById(Integer id, TasksDTO tasksDTO);
     TasksDTO deleteById(Integer id);
     void saveManyTasks(Tasks tasks);

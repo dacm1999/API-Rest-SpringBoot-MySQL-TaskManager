@@ -15,6 +15,7 @@ import com.dacm.taskManager.service.implementedService.TasksServiceImpl;
 import com.dacm.taskManager.service.implementedService.UserServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -81,8 +82,8 @@ public class TasksRestController {
         response.setTotalPages(result.getTotalPages());
         response.setTotalElements(result.getTotalElements());
         response.setPage(result.getNumber());
-        response.setNumberOfElements(result.getNumberOfElements());
         response.setSize(result.getSize());
+        response.setNumberOfElements(result.getNumberOfElements());
 
         return ResponseEntity.ok(response);
     }
@@ -92,7 +93,7 @@ public class TasksRestController {
     @PreAuthorize("hasAnyRole('ADMIN','USER')")
     public ResponseEntity<TasksByUsernameResponse> getTasksWithDetails(@PathVariable String username,
                                                                        @RequestParam(defaultValue = "0") int page,
-                                                                       @RequestParam(defaultValue = "15") int size,
+                                                                       @RequestParam(defaultValue = "10") int size,
                                                                        @RequestParam(required = false) String name,
                                                                        @RequestParam(required = false) String description,
                                                                        @RequestParam(required = false) String status,
@@ -101,52 +102,65 @@ public class TasksRestController {
                                                                        @RequestParam(required = false) String priority) {
 
 
-        Optional<User> user = userRepository.findByUsername(username);
-        int totalTasks = 0;
-        int count_completed = 0;
-        int count_pending = 0;
-        List<TasksDTO> completedTasks = new ArrayList<>();
-        List<TasksDTO> pendientingTasks = new ArrayList<>();
+        try{
+            Optional<User> user = userRepository.findByUsername(username);
+            int totalTasks = 0;
+            int count_completed = 0;
+            int count_pending = 0;
+            List<TasksDTO> completedTasks = new ArrayList<>();
+            List<TasksDTO> pendingTasksList = new ArrayList<>();
 
-        Page<TasksDTO> result = tasksService.getAllTask(
-                PageRequest.of(page, size),
-                name,
-                description,
-                status,
-                creation_date,
-                due_date,
-                priority
-        );
+            int userId = user.get().userId;
 
-        if (user == null) {
-            throw new NoSuchElementException("User with username " + username + " not found");
-        }
+            Page<TasksDTO> result = tasksService.getAllTasksByUserId(
+                    userId,
+                    PageRequest.of(page, size),
+                    name,
+                    description,
+                    status,
+                    creation_date,
+                    due_date,
+                    priority
+            );
+            List<TasksDTO> tasksDTOList = tasksService.getByUserId(userId);
 
-        int userId = user.get().userId;
-        List<TasksDTO> tasksDTOList = tasksService.getByUserId(userId);
+            for(TasksDTO tempDTO : result.getContent()){
+                if(tempDTO.getStatus().equalsIgnoreCase("Pending")){
+                    count_pending++;
+                    pendingTasksList.add(tempDTO);
+                }
+                if(tempDTO.getStatus().equalsIgnoreCase("Completed")){
+                    count_completed++;
+                    completedTasks.add(tempDTO);
+                }
 
-        for(TasksDTO tempDTO : tasksDTOList){
-            if(tempDTO.getStatus().equalsIgnoreCase("Pending")){
-                count_pending++;
-                pendientingTasks.add(tempDTO);
+                totalTasks++;
             }
 
-            if(tempDTO.getStatus().equalsIgnoreCase("Completed")){
-                count_completed++;
-                completedTasks.add(tempDTO);
-            }
-            totalTasks++;
+
+            Page<TasksDTO> completedTasksPage = new PageImpl<>(completedTasks, result.getPageable(), completedTasks.size());
+            Page<TasksDTO> pendingTasksPage = new PageImpl<>(pendingTasksList, result.getPageable(), pendingTasksList.size());
+
+
+
+            TasksByUsernameResponse response = new TasksByUsernameResponse();
+            response.setUsername(username);
+            response.setTotalTasks(totalTasks);
+            response.setTotalCompletedTasks(count_completed);
+            response.setTotalPendingTasks(count_pending);
+            response.setCompletedTasks(completedTasksPage.getContent());
+            response.setPendingTasks(pendingTasksPage.getContent());
+            response.setNumberOfElements(tasksDTOList.size());
+            response.setTotalPages(result.getTotalPages());
+            response.setTotalElements(tasksDTOList.size());
+            response.setPage(result.getNumber());
+            response.setSize(result.getSize());
+
+            return ResponseEntity.ok(response);
+        }catch (NoSuchElementException e){
+            throw new CommonErrorResponse("User not found with name: " + username);
         }
 
-        TasksByUsernameResponse response = new TasksByUsernameResponse(username, totalTasks, count_completed, count_pending, completedTasks, pendientingTasks);
-        response.setTasks(result.getContent());
-        response.setTotalPages(result.getTotalPages());
-        response.setTotalElements(result.getTotalElements());
-        response.setPage(result.getNumber());
-        response.setNumberOfElements(result.getNumberOfElements());
-        response.setSize(result.getSize());
-
-        return ResponseEntity.ok(response);
     }
 
 
