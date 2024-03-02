@@ -25,11 +25,8 @@ import java.util.*;
 @RequestMapping("/api/v1/users")
 public class UsersRestController {
 
-
-    @Autowired
     private final UserServiceImpl userService;
     private final PasswordEncoder passwordEncoder;
-
 
     @GetMapping(value = "/{id}")
     public ResponseEntity<UserDTO> getUser(@PathVariable Integer id) {

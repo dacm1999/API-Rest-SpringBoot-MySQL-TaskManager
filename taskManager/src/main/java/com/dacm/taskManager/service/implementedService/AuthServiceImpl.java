@@ -1,7 +1,9 @@
 package com.dacm.taskManager.service.implementedService;
 
+import com.dacm.taskManager.exception.CommonErrorResponse;
 import com.dacm.taskManager.responses.AuthResponse;
 import com.dacm.taskManager.responses.LoginRequest;
+import com.dacm.taskManager.responses.PasswordRequest;
 import com.dacm.taskManager.responses.RegisterRequest;
 import com.dacm.taskManager.entity.User;
 import com.dacm.taskManager.enums.Role;
@@ -53,5 +55,6 @@ public class AuthServiceImpl implements AuthService {
                 .generatedToken(jwtService.getToken(user))
                 .build();
     }
+
 
 }

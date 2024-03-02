@@ -13,7 +13,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/api/v1/auth")
 @RequiredArgsConstructor
 @CrossOrigin(origins = {"http://localhost:8080"})
 public class AuthRestController {
@@ -32,7 +32,7 @@ public class AuthRestController {
         }
     }
 
-    @PostMapping(value = "register")
+    @PostMapping(value = "/register")
     public ResponseEntity<AuthResponse> register(@RequestBody RegisterRequest request) {
         //Validations
         if(StringUtils.isEmpty(request.getUsername())){

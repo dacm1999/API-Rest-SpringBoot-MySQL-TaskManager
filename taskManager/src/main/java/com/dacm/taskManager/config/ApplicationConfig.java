@@ -1,4 +1,4 @@
-package com.dacm.taskManager.security;
+package com.dacm.taskManager.config;
 
 import com.dacm.taskManager.repository.UserRepository;
 import org.springframework.context.annotation.Bean;
