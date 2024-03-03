@@ -1,4 +1,4 @@
-package com.dacm.taskManager.responses;
+package com.dacm.taskManager.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,10 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserRequest {
-    int userId;
-    String username;
-    String firstname;
-    String lastname;
+public class PasswordResetRequest {
+
     String email;
 }

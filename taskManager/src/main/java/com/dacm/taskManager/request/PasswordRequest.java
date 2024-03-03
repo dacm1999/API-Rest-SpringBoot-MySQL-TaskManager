@@ -1,4 +1,4 @@
-package com.dacm.taskManager.responses;
+package com.dacm.taskManager.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,5 +11,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class PasswordRequest {
 
-    String email;
+    String oldPassword;
+    String newPassword;
 }

@@ -2,10 +2,11 @@ package com.dacm.taskManager.controller;
 
 import com.dacm.taskManager.responses.RegisterRequest;
 import com.dacm.taskManager.responses.AuthResponse;
-import com.dacm.taskManager.responses.LoginRequest;
+import com.dacm.taskManager.request.LoginRequest;
 import com.dacm.taskManager.service.implementedService.AuthServiceImpl;
 import com.dacm.taskManager.exception.AuthErrorResponse;
 import com.dacm.taskManager.repository.UserRepository;
+import com.dacm.taskManager.service.implementedService.EmailServiceImpl;
 import io.micrometer.common.util.StringUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +21,7 @@ public class AuthRestController {
 
     private final AuthServiceImpl authService;
     private final UserRepository userRepository;
+    private final EmailServiceImpl emailService;
 
     @PostMapping(value = "/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest request) {
@@ -34,7 +36,7 @@ public class AuthRestController {
 
     @PostMapping(value = "/register")
     public ResponseEntity<AuthResponse> register(@RequestBody RegisterRequest request) {
-        //Validations
+        // Validations
         if(StringUtils.isEmpty(request.getUsername())){
             throw new IllegalArgumentException("Username must be mandatory");
         } else if (userRepository.existsByEmail(request.getEmail())) {
@@ -44,7 +46,7 @@ public class AuthRestController {
         if(StringUtils.isEmpty(request.getEmail())){
             throw new IllegalArgumentException("Email must be mandatory");
 
-        }else if(userRepository.existsByUsernameContainsIgnoreCase(request.getUsername())){
+        } else if(userRepository.existsByUsernameContainsIgnoreCase(request.getUsername())){
             throw new IllegalArgumentException("Username already registered.");
         }
 
@@ -54,7 +56,21 @@ public class AuthRestController {
             throw new IllegalArgumentException("The password must be more than 5 characters.");
         }
 
+        sendRegistrationEmail(request.getEmail(), request.getUsername());
         return ResponseEntity.ok(authService.register(request));
+    }
+
+
+    private void sendRegistrationEmail(String email, String username) {
+        String subject = "Registration Successful";
+        String messageText = "Dear " + username + ",\n\n" +
+                "Thank you for registering with us. Your account has been successfully created.\n\n" +
+                "Username: " + username + "\n" +
+                "Email: " + email + "\n\n" +
+                "You can now log in to your account and start using our services.\n\n" +
+                "Regards,\nThe TaskSync Team";
+
+        emailService.sendEmail(email, subject, messageText);
     }
 
 }

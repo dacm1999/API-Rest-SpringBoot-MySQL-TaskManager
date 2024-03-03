@@ -1,4 +1,4 @@
-package com.dacm.taskManager.responses;
+package com.dacm.taskManager.request;
 
 import lombok.*;
 

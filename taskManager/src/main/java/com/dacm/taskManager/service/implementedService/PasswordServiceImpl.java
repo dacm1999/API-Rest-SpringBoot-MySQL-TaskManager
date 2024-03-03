@@ -1,21 +1,18 @@
 package com.dacm.taskManager.service.implementedService;
 
-import ch.qos.logback.core.testUtil.RandomUtil;
 import com.dacm.taskManager.entity.User;
-import com.dacm.taskManager.exception.CommonErrorResponse;
 import com.dacm.taskManager.repository.UserRepository;
-import com.dacm.taskManager.responses.PasswordRequest;
+import com.dacm.taskManager.request.PasswordResetRequest;
 import com.dacm.taskManager.service.interfaceService.EmailService;
-import com.dacm.taskManager.service.interfaceService.PasswordResetService;
+import com.dacm.taskManager.service.interfaceService.PasswordService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
-import java.util.UUID;
 
 @Service
-public class PasswordResetServiceImpl implements PasswordResetService {
+public class PasswordServiceImpl implements PasswordService {
 
     @Autowired
     private UserRepository userRepository;
@@ -29,7 +26,7 @@ public class PasswordResetServiceImpl implements PasswordResetService {
 
 
     @Override
-    public void resetPassword(PasswordRequest request) {
+    public void resetPassword(PasswordResetRequest request) {
         User user = userRepository.findByEmail(request.getEmail());
 
         int passwordLength = 15; //
@@ -41,6 +38,20 @@ public class PasswordResetServiceImpl implements PasswordResetService {
 
         System.out.println(newPassword);
         emailService.sendPasswordResetEmail(user.getEmail(), newPassword);
+    }
+
+    @Override
+    public void updatePassword(String username, String newPassword) {
+        // Retrieve the user from the database based on the username
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+        // Encode the new password
+        String encodedPassword = passwordEncoder.encode(newPassword);
+
+        // Update the user's password
+        user.setPassword(encodedPassword);
+        userRepository.save(user);
     }
 
     @Override
