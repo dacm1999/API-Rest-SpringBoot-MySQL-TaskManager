@@ -1,10 +1,6 @@
-¡Entendido! Aquí tienes una versión en español para tu README:
-
----
-
 # Gestor de Tareas con Spring Boot y MySQL
 
-Este proyecto es un gestor de tareas desarrollado con Spring Boot, una potente plataforma para la creación de aplicaciones Java. Esta API RESTful permite a los usuarios crear, organizar y administrar sus tareas diarias de manera eficiente.
+Este proyecto es un gestor de tareas desarrollado con Spring Boot, una plataforma potente para el desarrollo de aplicaciones Java. Esta API RESTful fue creada utilizando la versión 17 de Java y permite a los usuarios crear, organizar y administrar sus tareas diarias de manera eficiente.
 
 ## Características principales
 
@@ -21,24 +17,28 @@ Este proyecto es un gestor de tareas desarrollado con Spring Boot, una potente p
 
 ## Tecnologías utilizadas
 
-- MySQL
 - JWT 
+- MySQL
 - Lombok
-- Spring Boot
 - Spring Web
+- Spring Boot
 - Spring DevTools
 - Spring Data JPA
 - Spring Security
 - Spring Starter Mail
 
+- Postman
+- IntelliJ Idea
+- MySQL Workbench
+
 ## Instalación y configuración
 
 Para ejecutar el proyecto localmente, sigue estos pasos:
 
-1. Clona el repositorio desde GitHub.
+1. Clona el repositorio desde GitHub utilizando el comando `git clone url-repositorio`.
 2. Importa la base de datos MySQL y actualiza las credenciales en el archivo `application.properties` (La contraseña de todos los usuarios en la BD es 12345).
 3. Compila el proyecto utilizando el comando Maven: `mvn clean install` o el mismo IDE.
-4. Accede a la API desde tu navegador o herramienta de cliente REST favorita.
+4. Accede a la API desde tu navegador o herramienta de cliente REST, te recomiendo `Postman`.
 5. Importa los archivos JSON que contienen todas las llamadas a la API para no tener que escrirlas. 
 
 ---
