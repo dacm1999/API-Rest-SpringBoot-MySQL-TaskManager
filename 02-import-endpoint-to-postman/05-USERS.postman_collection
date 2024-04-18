@@ -1,0 +1,359 @@
+{
+	"info": {
+		"_postman_id": "2d0d1076-f085-43a7-aeb8-8db51b6409f0",
+		"name": "USERS",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "31090133"
+	},
+	"item": [
+		{
+			"name": "GET ALL USERS",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJmaXJzdE5hbWUiOiJEYW5pZWwiLCJsYXN0TmFtZSI6IkNvbnRyZXJhcyIsInN1YiI6ImRhY20iLCJpYXQiOjE3MTEzODc1MzMsImV4cCI6MTcxMTM5MTEzM30.g_DmyLp5Q8RT6GQU2zDo1GmCXQhZR9jhYi3ABErR0pc",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/v1/users/allUsers",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"users",
+						"allUsers"
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "2",
+							"disabled": true
+						},
+						{
+							"key": "size",
+							"value": "3",
+							"disabled": true
+						},
+						{
+							"key": "firstname",
+							"value": "Daniel",
+							"disabled": true
+						},
+						{
+							"key": "lastname",
+							"value": "Contreras",
+							"disabled": true
+						},
+						{
+							"key": "username",
+							"value": "dacm",
+							"disabled": true
+						},
+						{
+							"key": "email",
+							"value": "daniel@mail.com",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "ADD USERS",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJmaXJzdE5hbWUiOiJEYW5pZWwiLCJsYXN0TmFtZSI6IkNvbnRyZXJhcyIsInN1YiI6ImRhY20iLCJpYXQiOjE3MDg2OTA1OTcsImV4cCI6MTcwODY5NDE5N30.WtdJ4c75YO-71sw5gOd_OM8woelz4KUlVszisV8qPIg",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "[\r\n   {\r\n        \"username\": \"nicolerf\",\r\n        \"firstname\": \"Nicole\",\r\n        \"lastname\": \"Rojas\",\r\n        \"email\": \"nicole@gmail.com\",\r\n        \"password\":\"fun123\"\r\n    },\r\n    {\r\n        \"username\": \"merys2\",\r\n        \"firstname\": \"Mery\",\r\n        \"lastname\": \"Mejia\",\r\n        \"email\": \"mery@mail.com\",\r\n        \"password\":\"fun123\"\r\n    }\r\n]",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/v1/users/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"users",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET USER BY ID",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJmaXJzdE5hbWUiOiJEYW5pZWwiLCJsYXN0TmFtZSI6IkNvbnRyZXJhcyIsInN1YiI6ImRhY20iLCJpYXQiOjE3MDg0NTU4OTAsImV4cCI6MTcwODQ1OTQ5MH0.bQeZwxceczFmF3vuX5fYJuXhvg_suEwRKybgcJ1raxQ",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/v1/users/:id",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"users",
+						":id"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "UPDATE USER",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJmaXJzdE5hbWUiOiJEYW5pZWwiLCJsYXN0TmFtZSI6IkNvbnRyZXJhcyIsInN1YiI6ImRhY20iLCJpYXQiOjE3MTEzODk4ODUsImV4cCI6MTcxMTM5MzQ4NX0.XVJiGpMS8WaBVES8k6Ld1uzBRoYopciURyeQoLktDyc",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\": \"dacm1\",\r\n    \"firstname\": \"Alejandro\",\r\n    \"lastname\": \"Contreras\",\r\n    \"email\": \"daniela.conmej@gmail.com\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/v1/users/:id",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"users",
+						":id"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DELETE USER BY ID",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJmaXJzdE5hbWUiOiJEYW5pZWwiLCJsYXN0TmFtZSI6IkNvbnRyZXJhcyIsInN1YiI6ImRhY20iLCJpYXQiOjE3MTA1MDgxNTQsImV4cCI6MTcxMDUxMTc1NH0.OkHzAuYZFq_TSDAGnNDoSIHXNVo05VHSKu97bJx3QvI",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/v1/users/:id",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"users",
+						":id"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": "109"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET USER BY USERNAME",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJmaXJzdE5hbWUiOiJEYW5pZWwiLCJsYXN0TmFtZSI6IkNvbnRyZXJhcyIsInN1YiI6ImRhY20iLCJpYXQiOjE3MTEzODc1MzMsImV4cCI6MTcxMTM5MTEzM30.g_DmyLp5Q8RT6GQU2zDo1GmCXQhZR9jhYi3ABErR0pc",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/v1/users/username/:username",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"users",
+						"username",
+						":username"
+					],
+					"variable": [
+						{
+							"key": "username",
+							"value": "dacm"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "RESET PASSWORD",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\":\"danielcontreras_98@hotmail.com\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/v1/password/reset",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"password",
+						"reset"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "UPDATE PASSWORD",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJmaXJzdE5hbWUiOiJEYW5pZWwiLCJsYXN0TmFtZSI6IkNvbnRyZXJhcyIsInN1YiI6ImRhY20iLCJpYXQiOjE3MDk1NzYyMTYsImV4cCI6MTcwOTU3OTgxNn0.q44eVqN-MAN-yYVqcHSwVq9mix_5pWeZG1CnCCy0054",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"oldPassword\":\"12345\",\r\n    \"newPassword\":\"123456\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/v1/password/newPassword/:username",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"password",
+						"newPassword",
+						":username"
+					],
+					"variable": [
+						{
+							"key": "username",
+							"value": "nicolerf"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

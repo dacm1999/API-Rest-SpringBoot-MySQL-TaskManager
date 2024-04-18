@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 @CrossOrigin(origins = {"http://localhost:8080"})
 public class AuthRestController {
 
+
     private final AuthServiceImpl authService;
     private final UserRepository userRepository;
     private final EmailServiceImpl emailService;
@@ -37,6 +38,7 @@ public class AuthRestController {
     @PostMapping(value = "/register")
     public ResponseEntity<AuthResponse> register(@RequestBody RegisterRequest request) {
         // Validations
+
         if(StringUtils.isEmpty(request.getUsername())){
             throw new IllegalArgumentException("Username must be mandatory");
         } else if (userRepository.existsByEmail(request.getEmail())) {
