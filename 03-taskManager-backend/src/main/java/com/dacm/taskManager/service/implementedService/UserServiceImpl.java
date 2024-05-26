@@ -1,7 +1,12 @@
 package com.dacm.taskManager.service.implementedService;
 
+import com.dacm.taskManager.enums.Role;
+import com.dacm.taskManager.exception.CommonErrorResponse;
 import com.dacm.taskManager.repository.UserRepository;
 import com.dacm.taskManager.entity.User;
+import com.dacm.taskManager.responses.AddedResponse;
+import com.dacm.taskManager.responses.UserErrorResponse;
+import com.dacm.taskManager.responses.UserPaginationResponse;
 import com.dacm.taskManager.service.interfaceService.UserService;
 import com.dacm.taskManager.dto.UserDTO;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +28,80 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
+    public AddedResponse addMultipleUsers(User[] users) {
+        List<UserDTO> addedUsers = new ArrayList<>();
+        List<UserErrorResponse> usersFail = new ArrayList<>();
+        String reason = "";
+        String errorDescription = "";
+
+        Set<String> existingUsernames = new HashSet<>();
+        Set<String> existingEmails = new HashSet<>();
+
+        // Obtener todos los nombres de usuario y correos electrónicos existentes en la base de datos
+        List<String> usernames = getAllUsernames();
+        List<String> emails = getAllEmails();
+        existingUsernames.addAll(usernames);
+        existingEmails.addAll(emails);
+
+        // Iterar sobre cada usuario para determinar el éxito de la operación
+        for (User usuario : users) {
+            String username = usuario.getUsername();
+            String email = usuario.getEmail();
+
+            reason = "Could not add this users  ";
+            errorDescription = "Username duplicated";
+            // Verificar si el nombre de usuario ya existe
+            if (existingUsernames.contains(username)) {
+                // Agregar el usuario al listado de usuarios fallidos
+                usersFail.add(new UserErrorResponse(username, email, errorDescription));
+                continue; // Pasar al siguiente usuario
+            }
+
+            // Verificar si el correo electrónico ya existe
+            if (existingEmails.contains(email)) {
+                // Agregar el usuario al listado de usuarios fallidos
+                errorDescription = "Email duplicated";
+                usersFail.add(new UserErrorResponse(username, email, errorDescription));
+                continue; // Pasar al siguiente usuario
+            }
+
+            // Construir el objeto User
+            User user = User.builder()
+                    .username(username)
+                    .password(passwordEncoder.encode(usuario.getPassword()))
+                    .firstname(usuario.getFirstname())
+                    .lastname(usuario.getLastname())
+                    .email(email)
+                    .role(Role.ROLE_USER) // Asignar el rol del usuario
+                    .build();
+
+            // Guardar el usuario en la base de datos
+            save(user);
+
+            // Agregar el usuario a los conjuntos de nombres de usuario y correos electrónicos existentes
+            reason = "Could not add this users";
+            existingUsernames.add(username);
+            existingEmails.add(email);
+
+            // Convertir el usuario a UserDTO y agregarlo a la lista de usuarios agregados
+            addedUsers.add(UserDTO.builder()
+                    .username(username)
+                    .firstname(usuario.getFirstname())
+                    .lastname(usuario.getLastname())
+                    .email(email)
+                    .build());
+        }
+
+        int total = users.length;
+        int num_added = addedUsers.size();
+        int num_failed = usersFail.size();
+
+        // Calcular el éxito de la operación y crear el modelo de respuesta
+        boolean success = num_added > 0;
+        return new AddedResponse(success, total, num_added, num_failed, (ArrayList) addedUsers, (ArrayList) usersFail, reason);
+    }
+
+    @Override
     public UserDTO convertToDTO(User user) {
         UserDTO userDTO = new UserDTO();
         userDTO.setUsername(user.getUsername());
@@ -36,50 +115,29 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDTO getUser(String username) {
         User user = userRepository.findFirstByUsername(username);
-        if (user != null) {
-            UserDTO userDTO = UserDTO.builder()
-                    .username(user.username)
-                    .firstname(user.firstname)
-                    .lastname(user.lastname)
-                    .email(user.email)
-                    .build();
-            return userDTO;
+        if(user == null) {
+            throw new CommonErrorResponse("Username not found: " + username);
         }
-
-        return null;
+        return convertToDTO(user);
     }
 
     @Override
     public UserDTO getUser(Integer id) {
-        User user = userRepository.findById(id).orElse(null);
-
-        if (user != null) {
-            UserDTO userDTO = UserDTO.builder()
-                    .username(user.username)
-                    .firstname(user.firstname)
-                    .lastname(user.lastname)
-                    .email(user.email)
-                    .build();
-            return userDTO;
-        }
-        return null;
+        User user = userRepository.findById(id).orElseThrow(() -> new CommonErrorResponse("User not found with ID: " + id));
+        return convertToDTO(user);
     }
 
     @Override
     public UserDTO updateUserById(Integer id, UserDTO updatedUserDTO) {
-        // Verify if user exits
-        User user = userRepository.findById(id).orElseThrow(() -> new NoSuchElementException("User not found with id: " + id));
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("User not found with ID: " + id));
 
-        // Update user fields with new values
         user.setUsername(updatedUserDTO.getUsername());
         user.setFirstname(updatedUserDTO.getFirstname());
         user.setLastname(updatedUserDTO.getLastname());
         user.setEmail(updatedUserDTO.getEmail());
 
-        // Save all changes at repository
         User updatedUser = userRepository.save(user);
-
-        // Convert all updated users a DTO and return them
         return convertToDTO(updatedUser);
     }
 
@@ -94,7 +152,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Page<UserDTO> getAllUsersDTO(PageRequest pageRequest, String username, String firstname, String lastname, String email) {
+    public UserPaginationResponse getAllUsersDTO(PageRequest pageRequest, String username, String firstname, String lastname, String email) {
         Specification<User> specification = Specification.where(null);
         if (username != null) {
             specification = specification.and((root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("username"), username));
@@ -110,7 +168,17 @@ public class UserServiceImpl implements UserService {
         }
 
         Page<User> userPage = userRepository.findAll(specification, pageRequest);
-        return userPage.map(this::convertToDTO);
+        Page<UserDTO> userDTOPage = userPage.map(this::convertToDTO);
+
+        UserPaginationResponse response = new UserPaginationResponse();
+        response.setUsers(userDTOPage.getContent());
+        response.setTotalPages(userDTOPage.getTotalPages());
+        response.setTotalElements(userDTOPage.getTotalElements());
+        response.setNumber(userDTOPage.getNumber());
+        response.setNumberOfElements(userDTOPage.getNumberOfElements());
+        response.setSize(userDTOPage.getSize());
+
+        return response;
     }
 
     @Override

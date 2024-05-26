@@ -8,6 +8,8 @@ import com.dacm.taskManager.repository.TagRepository;
 import com.dacm.taskManager.responses.TagsPaginationResponse;
 import com.dacm.taskManager.service.implementedService.TagServiceImpl;
 import com.dacm.taskManager.dto.TagsDTO;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -23,80 +25,90 @@ import java.util.NoSuchElementException;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/tags")
+@RequestMapping("/v1/tags")
 public class TagsRestController {
 
     @Autowired
     private final TagServiceImpl tagService;
-    @Autowired
-    private final TagRepository tagsRepository;
 
-    @GetMapping(value = "/{tagName}")
-    @PreAuthorize("hasAnyRole('ADMIN','USER')")
-    public ResponseEntity<TagsDTO> getByTagName(@PathVariable String tagName) {
-        TagsDTO tagsDAO = tagService.getTag(tagName);
-
-        if (tagsDAO == null) {
-            throw new CommonErrorResponse("Tag not found " + tagName);
+    @Operation(summary = "Add a single tag")
+    @ApiResponse(responseCode = "200", description = "Tag added successfully")
+    @PostMapping(value = "/create")
+    public ResponseEntity<?> addSingleTag(@RequestBody Tags tags) {
+        try {
+            TagsDTO tagsDTO = tagService.createSingleTag(tags);
+            return ResponseEntity.ok(tagsDTO);
+        } catch (CommonErrorResponse e) {
+            TagsErrorResponse errorModel = new TagsErrorResponse(tags.getName(), e.getMessage());
+            List<TagsErrorResponse> failed = new ArrayList<>();
+            failed.add(errorModel);
+            return ResponseEntity.badRequest().body(failed);
         }
-
-        return ResponseEntity.ok(tagsDAO);
     }
 
-    @GetMapping(value = "/id/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN','USER')")
-    public ResponseEntity<TagsDTO> getById(@PathVariable Integer id) {
-        TagsDTO tagsDAO = tagService.getTagById(id);
+    @Operation(summary = "Add multiple tags")
+    @ApiResponse(responseCode = "200", description = "Tags added successfully")
+    @PostMapping(value = "/createMany")
+    public ResponseEntity<?> addManyTags(@RequestBody Tags[] tags) {
+        AddedResponse result = tagService.createManyTags(tags);
+        return ResponseEntity.ok(result);
+    }
 
-        if (tagsDAO == null) {
+    @Operation(summary = "Get tag by name")
+    @ApiResponse(responseCode = "200", description = "Tag found")
+    @GetMapping(value = "info/name/{tagName}")
+    public ResponseEntity<?> getByTagName(@PathVariable String tagName) {
+        TagsDTO tagsDTO = tagService.getTag(tagName);
+
+        if (tagsDTO == null) {
+            throw new CommonErrorResponse("Tag not found: " + tagName);
+        }
+
+        return ResponseEntity.ok(tagsDTO);
+    }
+
+    @Operation(summary = "Get tag by ID")
+    @ApiResponse(responseCode = "200", description = "Tag found")
+    @GetMapping(value = "info/id/{id}")
+    public ResponseEntity<?> getById(@PathVariable Integer id) {
+        TagsDTO tagsDTO = tagService.getTagById(id);
+
+        if (tagsDTO == null) {
             throw new CommonErrorResponse("Tag not found by ID " + id);
         }
-
-        return ResponseEntity.ok(tagsDAO);
-
+        return ResponseEntity.ok(tagsDTO);
     }
 
+    @Operation(summary = "Get all tags")
+    @ApiResponse(responseCode = "200", description = "All tags")
     @GetMapping(value = "/allTags")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<TagsPaginationResponse> showAllTags(
+    public ResponseEntity<?> showAllTags(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "15") int size,
             @RequestParam(required = false) String name,
             @RequestParam(required = false) String description
     ) {
-        Page<TagsDTO> tagsDTOPage = tagService.getAllTagsDTOPage(
-                PageRequest.of(page, size),
-                name,
-                description
-        );
+        Page<TagsDTO> tagsDTOPage = tagService.getAllTagsDTOPage(PageRequest.of(page, size), name, description);
 
-        TagsPaginationResponse response = new TagsPaginationResponse();
-        response.setTags(tagsDTOPage.getContent());
-        response.setTotalElements(tagsDTOPage.getTotalElements());
-        response.setTotalPages(tagsDTOPage.getTotalPages());
-        response.setNumberOfElements(tagsDTOPage.getNumberOfElements());
-        response.setSize(tagsDTOPage.getSize());
+        TagsPaginationResponse response = tagService.createTagsPaginationResponse(tagsDTOPage);
         return ResponseEntity.ok(response);
     }
 
-    @PutMapping(value = "/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN','USER')")
-    public ResponseEntity<TagsDTO> updateTagByID(@PathVariable Integer id, @RequestBody TagsDTO updatedTagDTO) {
+    @Operation(summary = "Update tag by ID")
+    @ApiResponse(responseCode = "200", description = "Tag updated successfully")
+    @PutMapping(value = "update/{id}")
+    public ResponseEntity<?> updateTagByID(@PathVariable Integer id, @RequestBody TagsDTO updatedTagDTO) {
         try {
             TagsDTO updatedTag = tagService.updateTagById(id, updatedTagDTO);
             return ResponseEntity.ok(updatedTag);
         } catch (NoSuchElementException e) {
-            // Manejar el caso en que el usuario no se encuentre
             throw new CommonErrorResponse("Tag not found with ID: " + id);
-        } catch (Exception e) {
-            // Manejar otros posibles errores
-            throw new CommonErrorResponse("Error updating user with ID: " + id, e);
         }
-
     }
 
-    @DeleteMapping(value = "/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @Operation(summary = "Delete tag by ID")
+    @ApiResponse(responseCode = "200", description = "Tag deleted successfully")
+    @DeleteMapping(value = "delete/{id}")
     public ResponseEntity<TagsDTO> deleteByID(@PathVariable Integer id) {
         try {
             TagsDTO deletedByTagId = tagService.deleteById(id);
@@ -106,82 +118,6 @@ public class TagsRestController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
-    }
-
-    @PostMapping(value = "/single")
-    @PreAuthorize("hasAnyRole('ADMIN','USER')")
-    public ResponseEntity<?> addSingleTag(@RequestBody Tags tags) {
-        TagsDTO tagsDTO = null;
-
-        // Get all existing tags DTOs and initialize a list to store failed operations
-        List<TagsDTO> tagsDTOList = tagService.getAllTagsDTO();
-        List<TagsErrorResponse> failed = new ArrayList<>();
-
-        boolean repeatCode = false; // Move this declaration out of the for loop
-
-        // Iterate through existing tags DTOs to check for duplicates
-        for (TagsDTO tempTagDTO : tagsDTOList) {
-            // Check if the tag name already exists
-            if (tags.getName().equals(tempTagDTO.getName())) {
-                // If duplicate found, create an error model and add it to the list of failed operations
-                TagsErrorResponse errorModel = new TagsErrorResponse(tags.getName(), "COULD NOT ADD BECAUSE TAG NAME IS DUPLICATED");
-                repeatCode = true;
-                failed.add(errorModel);
-                return ResponseEntity.ok(failed); // Return the list of failed operations as response
-//                return ResponseEntity.badRequest(failed); // Return the list of failed operations as response
-            }
-        }
-
-        // If no duplicate found, proceed to save the new tag
-        if (!repeatCode) {
-            // Save the Tags object using the repository
-            Tags savedTags = tagsRepository.save(tags);
-            // Convert the saved tag to DTO
-            tagsDTO = tagService.convertToDTO(savedTags); // Assuming you have a method to convert Tags to TagsDTO
-        }
-
-        // Return the DTO of the saved tag or null if no duplicate was found
-        return ResponseEntity.ok(tagsDTO);
-    }
-
-    @PostMapping(value = "/")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<AddedResponse> addManyTags(@RequestBody Tags[] tags) {
-        List<TagsDTO> tagsDTOList = tagService.getAllTagsDTO();
-        AddedResponse result;
-        String reason = "";
-        int total = tags.length;
-        int count_added = 0;
-        int count_failed = 0;
-        List<TagsErrorResponse> failed = new ArrayList<>();
-        List<Tags> addedTags = new ArrayList<>();
-
-        for (Tags tag : tags) {
-            boolean repeatCode = false;
-            for (TagsDTO tagsDTO : tagsDTOList) {
-                if (tag.getName().equals(tagsDTO.getName())) {
-                    TagsErrorResponse errorModel = new TagsErrorResponse(
-                            tag.getName()
-                            , "TAG NAME REPEATED");
-                    failed.add(errorModel);
-                    count_failed++;
-                    repeatCode = true;
-                    reason = "COULD NOT ADD THIS TAGS";
-                    break;
-                }
-            }
-            if (!repeatCode) {
-                int id = tagService.saveManyTags(tag);
-                if (id != -1) {
-                    reason = "Tags added successfully";
-                    addedTags.add(tag);
-                    count_added++;
-                }
-            }
-        }
-
-        result = new AddedResponse(true, total, count_added, count_failed, (ArrayList) addedTags, (ArrayList) failed, reason);
-        return ResponseEntity.ok(result);
     }
 
 }

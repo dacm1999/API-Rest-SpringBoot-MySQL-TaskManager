@@ -16,7 +16,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"username\": \"nicolerf\",\r\n    \"firstname\": \"Nicole\",\r\n    \"lastname\": \"Rojas\",\r\n    \"email\": \"niku_rojas@hotmail.com\",\r\n    \"password\":\"12345\"\r\n}",
+					"raw": "{\r\n    \"username\": \"danielcontrerasm_zl\",\r\n    \"password\":\"12345\",\r\n    \"firstname\": \"Daniel\",\r\n    \"lastname\": \"Contreras\",\r\n    \"email\": \"dacm.dev@icloud.com\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -24,14 +24,13 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8080/api/v1/auth/register",
+					"raw": "http://localhost:8080/v1/auth/register",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
 					"port": "8080",
 					"path": [
-						"api",
 						"v1",
 						"auth",
 						"register"
@@ -47,7 +46,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"username\":\"dacm\",\r\n    \"password\":\"12345\"\r\n    //\"password\":\"6?TaQk8Q-b4NNk%\"\r\n}",
+					"raw": "{\r\n    \"username\":\"danielcontrerasm_zl\",\r\n    \"password\":\"12345\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -55,14 +54,13 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8080/api/v1/auth/login",
+					"raw": "http://localhost:8080/v1/auth/login",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
 					"port": "8080",
 					"path": [
-						"api",
 						"v1",
 						"auth",
 						"login"

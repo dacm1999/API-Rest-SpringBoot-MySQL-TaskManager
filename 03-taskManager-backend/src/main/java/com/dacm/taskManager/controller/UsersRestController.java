@@ -8,6 +8,8 @@ import com.dacm.taskManager.enums.Role;
 import com.dacm.taskManager.dto.UserDTO;
 import com.dacm.taskManager.responses.UserPaginationResponse;
 import com.dacm.taskManager.service.implementedService.UserServiceImpl;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -22,30 +24,43 @@ import java.util.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/users")
+@RequestMapping("/v1/users")
 public class UsersRestController {
 
     private final UserServiceImpl userService;
     private final PasswordEncoder passwordEncoder;
 
-    @GetMapping(value = "/{id}")
+    @Operation(summary = "Create multiple users", description = "Create multiple users in the database")
+    @ApiResponse(responseCode = "200", description = "Users created successfully")
+    @PostMapping("/createMultiple")
+    public ResponseEntity<AddedResponse> addManyUsers(@RequestBody User[] users) {
+        AddedResponse result = null;
+        try {
+            result = userService.addMultipleUsers(users);
+        } catch (HibernateQueryException e) {
+            throw new CommonErrorResponse("Duplicated values", e);
+        }
+        return ResponseEntity.ok(result);
+    }
+
+    @Operation(summary="Get user by ID", description = "Get user by ID from the database")
+    @ApiResponse(responseCode = "200", description = "User found")
+    @GetMapping(value = "info-id/{id}")
     public ResponseEntity<UserDTO> getUser(@PathVariable Integer id) {
         UserDTO userDTO = userService.getUser(id);
-        if (userDTO == null) {
-            throw new CommonErrorResponse("User not found with ID: " + id);
-        }
         return ResponseEntity.ok(userDTO);
     }
 
-    @GetMapping(value = "username/{username}")
+    @Operation(summary="Get user by username", description = "Get user by username from the database")
+    @ApiResponse(responseCode = "200", description = "User found")
+    @GetMapping(value = "info-username/{username}")
     public ResponseEntity<UserDTO> getByUsername(@PathVariable String username) {
         UserDTO userDTO = userService.getUser(username);
-        if (userDTO == null) {
-            throw new CommonErrorResponse("Username not found " + username);
-        }
         return ResponseEntity.ok(userDTO);
     }
 
+    @Operation(summary = "Show all users", description = "Show all users in the database")
+    @ApiResponse(responseCode = "200", description = "Users found")
     @GetMapping("/allUsers")
     public ResponseEntity<UserPaginationResponse> showAllUsers(
             @RequestParam(defaultValue = "0") int page,
@@ -55,40 +70,27 @@ public class UsersRestController {
             @RequestParam(required = false) String lastname,
             @RequestParam(required = false) String email
     ) {
-        Page<UserDTO> userPage = userService.getAllUsersDTO(
-                PageRequest.of(page, size),
-                username,
-                firstname,
-                lastname,
-                email
-        );
-
-        UserPaginationResponse response = new UserPaginationResponse();
-        response.setUsers(userPage.getContent());
-        response.setTotalPages(userPage.getTotalPages());
-        response.setTotalElements(userPage.getTotalElements());
-        response.setNumber(userPage.getNumber());
-        response.setNumberOfElements(userPage.getNumberOfElements());
-        response.setSize(userPage.getSize());
-
+        UserPaginationResponse response = userService.getAllUsersDTO(PageRequest.of(page, size), username, firstname, lastname, email);
         return ResponseEntity.ok(response);
     }
 
-    @PutMapping(value = "/{id}")
+    @Operation(summary = "Update user by ID", description = "Update user by ID in the database")
+    @ApiResponse(responseCode = "200", description = "User updated successfully")
+    @PutMapping(value = "update/{id}")
     public ResponseEntity<UserDTO> updateUserById(@PathVariable Integer id, @RequestBody UserDTO updatedUserDTO) {
         try {
             UserDTO updatedUser = userService.updateUserById(id, updatedUserDTO);
             return ResponseEntity.ok(updatedUser);
         } catch (NoSuchElementException e) {
-            // Manejar el caso en que el usuario no se encuentre
             throw new CommonErrorResponse("User not found with ID: " + id);
         } catch (Exception e) {
-            // Manejar otros posibles errores
             throw new CommonErrorResponse("Error updating user with ID: " + id, e);
         }
     }
 
-    @DeleteMapping(value = "/{id}")
+    @Operation(summary = "Delete user by ID", description = "Delete user by ID in the database")
+    @ApiResponse(responseCode = "200", description = "User deleted successfully")
+    @DeleteMapping(value = "delete/{id}")
     public ResponseEntity<UserDTO> deleteUserById(@PathVariable Integer id) {
         try {
             UserDTO deletedUserById = userService.deleteUserById(id);
@@ -98,89 +100,6 @@ public class UsersRestController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
-    }
-
-    @PostMapping("/")
-    public ResponseEntity<AddedResponse> addManyUsers(@RequestBody User[] users) {
-        AddedResponse result = null;
-
-        try {
-            List<UserDTO> addedUsers = new ArrayList<>();
-            List<UserErrorResponse> usersFail = new ArrayList<>();
-            String reason = "";
-            String errorDescription = "";
-
-            Set<String> existingUsernames = new HashSet<>();
-            Set<String> existingEmails = new HashSet<>();
-
-            // Obtener todos los nombres de usuario y correos electrónicos existentes en la base de datos
-            List<String> usernames = userService.getAllUsernames();
-            List<String> emails = userService.getAllEmails();
-            existingUsernames.addAll(usernames);
-            existingEmails.addAll(emails);
-
-            // Iterar sobre cada usuario para determinar el éxito de la operación
-            for (User usuario : users) {
-                String username = usuario.getUsername();
-                String email = usuario.getEmail();
-
-                reason = "Could not add this users  ";
-                errorDescription = "Username duplicated";
-                // Verificar si el nombre de usuario ya existe
-                if (existingUsernames.contains(username)) {
-                    // Agregar el usuario al listado de usuarios fallidos
-                    usersFail.add(new UserErrorResponse(username, email, errorDescription));
-                    continue; // Pasar al siguiente usuario
-                }
-
-                // Verificar si el correo electrónico ya existe
-                if (existingEmails.contains(email)) {
-                    // Agregar el usuario al listado de usuarios fallidos
-                    errorDescription = "Email duplicated";
-                    usersFail.add(new UserErrorResponse(username, email, errorDescription));
-                    continue; // Pasar al siguiente usuario
-                }
-
-
-                // Construir el objeto User
-                User user = User.builder()
-                        .username(username)
-                        .password(passwordEncoder.encode(usuario.getPassword()))
-                        .firstname(usuario.getFirstname())
-                        .lastname(usuario.getLastname())
-                        .email(email)
-                        .role(Role.ROLE_USER) // Asignar el rol del usuario
-                        .build();
-
-                // Guardar el usuario en la base de datos
-                userService.save(user);
-
-                // Agregar el usuario a los conjuntos de nombres de usuario y correos electrónicos existentes
-                reason = "Could not add this users";
-                existingUsernames.add(username);
-                existingEmails.add(email);
-
-                // Convertir el usuario a UserDTO y agregarlo a la lista de usuarios agregados
-                addedUsers.add(UserDTO.builder()
-                        .username(username)
-                        .firstname(usuario.getFirstname())
-                        .lastname(usuario.getLastname())
-                        .email(email)
-                        .build());
-            }
-
-            int total = users.length;
-            int num_added = addedUsers.size();
-            int num_failed = usersFail.size();
-
-            // Calcular el éxito de la operación y crear el modelo de respuesta
-            boolean success = num_added > 0;
-            result = new AddedResponse(success, total, num_added, num_failed, (ArrayList) addedUsers, (ArrayList) usersFail, reason);
-
-        } catch (HibernateQueryException e) {
-            throw new CommonErrorResponse("Duplicated values", e);
-        }
-        return ResponseEntity.ok(result);
     }
 
 }

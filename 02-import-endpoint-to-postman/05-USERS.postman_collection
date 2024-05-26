@@ -14,7 +14,7 @@
 					"bearer": [
 						{
 							"key": "token",
-							"value": "eyJhbGciOiJIUzI1NiJ9.eyJmaXJzdE5hbWUiOiJEYW5pZWwiLCJsYXN0TmFtZSI6IkNvbnRyZXJhcyIsInN1YiI6ImRhY20iLCJpYXQiOjE3MTEzODc1MzMsImV4cCI6MTcxMTM5MTEzM30.g_DmyLp5Q8RT6GQU2zDo1GmCXQhZR9jhYi3ABErR0pc",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJmaXJzdE5hbWUiOiJEYW5pZWwiLCJsYXN0TmFtZSI6IkNvbnRyZXJhcyIsInN1YiI6ImRhbmllbGNvbnRyZXJhc21femwiLCJpYXQiOjE3MTY3MjMxMjgsImV4cCI6MTcxNjcyNjcyOH0.-l5VNPx1HBs9XMJLDMDp48CuFRrgJaX7iTd7Q0uz3R4",
 							"type": "string"
 						}
 					]
@@ -22,14 +22,13 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:8080/api/v1/users/allUsers",
+					"raw": "http://localhost:8080/v1/users/allUsers",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
 					"port": "8080",
 					"path": [
-						"api",
 						"v1",
 						"users",
 						"allUsers"
@@ -78,7 +77,7 @@
 					"bearer": [
 						{
 							"key": "token",
-							"value": "eyJhbGciOiJIUzI1NiJ9.eyJmaXJzdE5hbWUiOiJEYW5pZWwiLCJsYXN0TmFtZSI6IkNvbnRyZXJhcyIsInN1YiI6ImRhY20iLCJpYXQiOjE3MDg2OTA1OTcsImV4cCI6MTcwODY5NDE5N30.WtdJ4c75YO-71sw5gOd_OM8woelz4KUlVszisV8qPIg",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJmaXJzdE5hbWUiOiJEYW5pZWwiLCJsYXN0TmFtZSI6IkNvbnRyZXJhcyIsInN1YiI6ImRhbmllbGNvbnRyZXJhc21femwiLCJpYXQiOjE3MTY3MjMxMjgsImV4cCI6MTcxNjcyNjcyOH0.-l5VNPx1HBs9XMJLDMDp48CuFRrgJaX7iTd7Q0uz3R4",
 							"type": "string"
 						}
 					]
@@ -95,17 +94,16 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8080/api/v1/users/",
+					"raw": "http://localhost:8080/v1/users/createMultiple",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
 					"port": "8080",
 					"path": [
-						"api",
 						"v1",
 						"users",
-						""
+						"createMultiple"
 					]
 				}
 			},
@@ -119,7 +117,7 @@
 					"bearer": [
 						{
 							"key": "token",
-							"value": "eyJhbGciOiJIUzI1NiJ9.eyJmaXJzdE5hbWUiOiJEYW5pZWwiLCJsYXN0TmFtZSI6IkNvbnRyZXJhcyIsInN1YiI6ImRhY20iLCJpYXQiOjE3MDg0NTU4OTAsImV4cCI6MTcwODQ1OTQ5MH0.bQeZwxceczFmF3vuX5fYJuXhvg_suEwRKybgcJ1raxQ",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJmaXJzdE5hbWUiOiJEYW5pZWwiLCJsYXN0TmFtZSI6IkNvbnRyZXJhcyIsInN1YiI6ImRhbmllbGNvbnRyZXJhc21femwiLCJpYXQiOjE3MTY3MjMxMjgsImV4cCI6MTcxNjcyNjcyOH0.-l5VNPx1HBs9XMJLDMDp48CuFRrgJaX7iTd7Q0uz3R4",
 							"type": "string"
 						}
 					]
@@ -127,16 +125,16 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:8080/api/v1/users/:id",
+					"raw": "http://localhost:8080/v1/users/info-id/:id",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
 					"port": "8080",
 					"path": [
-						"api",
 						"v1",
 						"users",
+						"info-id",
 						":id"
 					],
 					"variable": [
@@ -157,7 +155,7 @@
 					"bearer": [
 						{
 							"key": "token",
-							"value": "eyJhbGciOiJIUzI1NiJ9.eyJmaXJzdE5hbWUiOiJEYW5pZWwiLCJsYXN0TmFtZSI6IkNvbnRyZXJhcyIsInN1YiI6ImRhY20iLCJpYXQiOjE3MTEzODk4ODUsImV4cCI6MTcxMTM5MzQ4NX0.XVJiGpMS8WaBVES8k6Ld1uzBRoYopciURyeQoLktDyc",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJmaXJzdE5hbWUiOiJEYW5pZWwiLCJsYXN0TmFtZSI6IkNvbnRyZXJhcyIsInN1YiI6ImRhbmllbGNvbnRyZXJhc21femwiLCJpYXQiOjE3MTY3MjMxMjgsImV4cCI6MTcxNjcyNjcyOH0.-l5VNPx1HBs9XMJLDMDp48CuFRrgJaX7iTd7Q0uz3R4",
 							"type": "string"
 						}
 					]
@@ -166,7 +164,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"username\": \"dacm1\",\r\n    \"firstname\": \"Alejandro\",\r\n    \"lastname\": \"Contreras\",\r\n    \"email\": \"daniela.conmej@gmail.com\"\r\n}",
+					"raw": "{\r\n    \"username\": \"dacm2\",\r\n    \"firstname\": \"Alejandro\",\r\n    \"lastname\": \"Contreras\",\r\n    \"email\": \"daniela.conmej@gmail.com\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -174,16 +172,16 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8080/api/v1/users/:id",
+					"raw": "http://localhost:8080/v1/users/update/:id",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
 					"port": "8080",
 					"path": [
-						"api",
 						"v1",
 						"users",
+						"update",
 						":id"
 					],
 					"variable": [
@@ -204,7 +202,7 @@
 					"bearer": [
 						{
 							"key": "token",
-							"value": "eyJhbGciOiJIUzI1NiJ9.eyJmaXJzdE5hbWUiOiJEYW5pZWwiLCJsYXN0TmFtZSI6IkNvbnRyZXJhcyIsInN1YiI6ImRhY20iLCJpYXQiOjE3MTA1MDgxNTQsImV4cCI6MTcxMDUxMTc1NH0.OkHzAuYZFq_TSDAGnNDoSIHXNVo05VHSKu97bJx3QvI",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJmaXJzdE5hbWUiOiJEYW5pZWwiLCJsYXN0TmFtZSI6IkNvbnRyZXJhcyIsInN1YiI6ImRhbmllbGNvbnRyZXJhc21femwiLCJpYXQiOjE3MTY3MjMxMjgsImV4cCI6MTcxNjcyNjcyOH0.-l5VNPx1HBs9XMJLDMDp48CuFRrgJaX7iTd7Q0uz3R4",
 							"type": "string"
 						}
 					]
@@ -212,22 +210,22 @@
 				"method": "DELETE",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:8080/api/v1/users/:id",
+					"raw": "http://localhost:8080/v1/users/delete/:id",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
 					"port": "8080",
 					"path": [
-						"api",
 						"v1",
 						"users",
+						"delete",
 						":id"
 					],
 					"variable": [
 						{
 							"key": "id",
-							"value": "109"
+							"value": "56"
 						}
 					]
 				}
@@ -242,7 +240,7 @@
 					"bearer": [
 						{
 							"key": "token",
-							"value": "eyJhbGciOiJIUzI1NiJ9.eyJmaXJzdE5hbWUiOiJEYW5pZWwiLCJsYXN0TmFtZSI6IkNvbnRyZXJhcyIsInN1YiI6ImRhY20iLCJpYXQiOjE3MTEzODc1MzMsImV4cCI6MTcxMTM5MTEzM30.g_DmyLp5Q8RT6GQU2zDo1GmCXQhZR9jhYi3ABErR0pc",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJmaXJzdE5hbWUiOiJEYW5pZWwiLCJsYXN0TmFtZSI6IkNvbnRyZXJhcyIsInN1YiI6ImRhbmllbGNvbnRyZXJhc21femwiLCJpYXQiOjE3MTY3MjMxMjgsImV4cCI6MTcxNjcyNjcyOH0.-l5VNPx1HBs9XMJLDMDp48CuFRrgJaX7iTd7Q0uz3R4",
 							"type": "string"
 						}
 					]
@@ -250,23 +248,22 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:8080/api/v1/users/username/:username",
+					"raw": "http://localhost:8080/v1/users/info-username/:username",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
 					"port": "8080",
 					"path": [
-						"api",
 						"v1",
 						"users",
-						"username",
+						"info-username",
 						":username"
 					],
 					"variable": [
 						{
 							"key": "username",
-							"value": "dacm"
+							"value": "danielcontrerasm_zl"
 						}
 					]
 				}
@@ -332,14 +329,13 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8080/api/v1/password/newPassword/:username",
+					"raw": "http://localhost:8080/v1/password/newPassword/:username",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
 					"port": "8080",
 					"path": [
-						"api",
 						"v1",
 						"password",
 						"newPassword",
